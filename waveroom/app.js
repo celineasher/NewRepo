@@ -107,6 +107,8 @@ function renderArrangement(){
  updatePlayhead();
 }
 function renderSwitch(){
+ $('#maximizeEditor').classList.toggle('active',$('.main-panel').classList.contains('editor-maximized'));
+ $('#maximizeEditor').textContent=$('.main-panel').classList.contains('editor-maximized')?'↙ Show arrangement':'↗ Focus editor';
  $$('.pattern-switch button').forEach(b=>b.classList.toggle('active',b.dataset.pattern===ui.pattern));
  $$('.editor-tab').forEach(b=>b.classList.toggle('active',b.dataset.view===ui.view));
  const t=currentTrack();$('#editorTarget').textContent=`● ${t.name}`;$('#editorTarget').style.color=t.color;
@@ -121,7 +123,7 @@ function renderEditor(){
   for(let p=ROLL_MAX;p>=ROLL_MIN;p--){let y=(ROLL_MAX-p)*PITCH_HEIGHT;let black=[1,3,6,8,10].includes(p%12);pitchLabels+=`<div class="pitch-label ${black?'black-note':''} ${p%12===0?'c-note':''}">${pitchName(p)}</div>`;if(black||p%12===0)pitchBands+=`<div class="${black?'roll-black':'roll-c'}" style="top:${y}px"></div>`;}
   editor.innerHTML=`<div class="roll-shell"><div class="pitch-labels">${pitchLabels}</div><div class="roll-main" id="rollMain" style="--track:${currentTrack().color}">${pitchBands}<div class="roll-notes" id="rollNotes"></div><div class="step-play-marker" id="rollMarker" style="display:none"></div></div></div><div class="piano-keyboard"><div class="keyboard-info"><strong>Live keyboard</strong><small>Z to M · C4–C5</small></div><div class="keys-visual" id="keysVisual"></div></div>`;
   makeVisualKeyboard();renderPianoNotes();
-  editor.scrollTop=250;
+  editor.scrollTop=310;
  }else if(ui.view==='drums')renderDrums();else renderMixer();
  updatePlayhead();
 }
@@ -153,7 +155,7 @@ function controlHtml(name,label,val,min,max,step,unit){
 function renderInspector(){
  const t=currentTrack();const drum=t.type==='drum';
  let opts=(drum?['kick','snare','hat','clap']:['keys','bass','lead','pad','pluck','organ']).map(p=>`<option value="${p}" ${t.preset===p?'selected':''}>${PRESETS[p]}</option>`).join('');
- $('#inspector').innerHTML=`<div class="inspector-body"><div class="inspector-track-title"><span class="track-icon" style="--track:${t.color}">${esc(t.icon)}</span><div><h3>${esc(t.name)}</h3><small>${drum?'Drum synthesizer':'Polyphonic synthesizer'}</small></div></div><label class="inspector-label" for="presetSelect">SOUND PRESET</label><div class="select-wrap"><select id="presetSelect">${opts}</select><svg><use href="#i-chevron"/></svg></div><div class="inspector-label">TRACK MIX</div>${controlHtml('trackVolume','Volume',t.volume,0,1,.01,'%')}${controlHtml('trackPan','Stereo pan',t.pan,-100,100,1,'')}${drum?'':`<div class="inspector-divider"></div><div class="inspector-label">SYNTH ENVELOPE</div>${controlHtml('trackAttack','Attack',t.attack,.001,1.2,.001,'ms')}${controlHtml('trackRelease','Release',t.release,.04,2,.01,'ms')}${controlHtml('trackCutoff','Filter cutoff',t.cutoff,200,12000,100,'Hz')}`}<div class="inspector-divider"></div><label class="inspector-label">WAVEFORM</label><div class="sound-visual">${Array.from({length:42},(_,i)=>`<span style="height:${4+Math.abs(Math.sin(i*.32)*Math.cos(i*.055)*Math.sin(i*.7)*66)}px"></span>`).join('')}</div></div>`;
+ $('#inspector').innerHTML=`<div class="inspector-body"><div class="inspector-track-title"><span class="track-icon" style="--track:${t.color}">${esc(t.icon)}</span><div><h3>${esc(t.name)}</h3><small>${drum?'Drum synthesizer':'Polyphonic synthesizer'}</small></div></div><label class="inspector-label" for="presetSelect">SOUND PRESET</label><div class="select-wrap"><select id="presetSelect">${opts}</select><svg><use href="#i-chevron"/></svg></div><div class="inspector-label">TRACK MIX</div>${controlHtml('trackVolume','Volume',t.volume,0,1,.01,'%')}${controlHtml('trackPan','Stereo pan',Math.round(t.pan*100),-100,100,1,'')}${drum?'':`<div class="inspector-divider"></div><div class="inspector-label">SYNTH ENVELOPE</div>${controlHtml('trackAttack','Attack',t.attack,.001,1.2,.001,'ms')}${controlHtml('trackRelease','Release',t.release,.04,2,.01,'ms')}${controlHtml('trackCutoff','Filter cutoff',t.cutoff,200,12000,100,'Hz')}`}<div class="inspector-divider"></div><label class="inspector-label">WAVEFORM</label><div class="sound-visual">${Array.from({length:42},(_,i)=>`<span style="height:${4+Math.abs(Math.sin(i*.32)*Math.cos(i*.055)*Math.sin(i*.7)*66)}px"></span>`).join('')}</div></div>`;
  $('#trackVolume').addEventListener('input',e=>{t.volume=Number(e.target.value);$('#trackVolumeOut').textContent=Math.round(t.volume*100)+'%';updateChannelLevels();markChanged();});
  $('#trackPan').addEventListener('input',e=>{t.pan=Number(e.target.value)/100;$('#trackPanOut').textContent=Math.round(t.pan*100);updateChannelLevels();markChanged();});
  $('#presetSelect').addEventListener('change',e=>{t.preset=e.target.value;markChanged();renderInspector();renderTrackList();toast(`Sound: ${PRESETS[t.preset]}`);});
@@ -189,7 +191,7 @@ async function ensureAudio(){
  compressor=ctx.createDynamicsCompressor();compressor.threshold.value=-13;compressor.knee.value=16;compressor.ratio.value=3;compressor.attack.value=.003;compressor.release.value=.17;
  analyser=ctx.createAnalyser();analyser.fftSize=256;
  master.connect(compressor).connect(analyser).connect(ctx.destination);
- state.tracks.forEach(makeChannel);
+ state.tracks.forEach(makeChannel);updateChannelLevels();
  $('#engineStatus').textContent=ctx.sampleRate+'Hz';
 }
 function makeChannel(t,context=ctx,destination=master){
@@ -461,7 +463,11 @@ function addNewTrack(){
  const def={id:'synth-'+Date.now(),name:'Synth '+index,type:'melody',preset:'keys',color:['#ac93ee','#8cdbd2','#f4b08c','#90b8fb'][index%4],icon:'♫',volume:.65,pan:0};
  state.tracks.push(makeTrack(def));ui.trackId=def.id;ui.view='piano';rebuildAudio();renderAll();markChanged();toast('Synth track created');
 }
+function toggleFocusEditor(){
+ $('.main-panel').classList.toggle('editor-maximized');renderSwitch();
+}
 function attachEvents(){
+ $('#maximizeEditor').addEventListener('click',toggleFocusEditor);
  $('#playBtn').addEventListener('click',togglePlay);
  $('#stopBtn').addEventListener('click',stopPlayback);
  $('#toStart').addEventListener('click',()=>{if(schedulerTimer)pausePlayback();playhead=0;updateTimeDisplay();updatePlayhead();});
@@ -539,6 +545,7 @@ function attachEvents(){
  });
  window.addEventListener('keydown',e=>{
   if(e.target.matches('input,select,textarea')||e.target.isContentEditable)return;
+  if(e.key.toLowerCase()==='f'&&!e.repeat){e.preventDefault();toggleFocusEditor();return;}
   if(e.code==='Space'){e.preventDefault();if(!e.repeat)togglePlay();return;}
   if(e.code==='Escape'){e.preventDefault();stopPlayback();$('#helpModal').classList.add('hidden');return;}
   const pitch=KEYMAP[e.key.toLowerCase()];
