@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#080a14" />
+  <meta name="description" content="GameForge — an infinite game creation alchemy sandbox. Mix genres, mechanics, worlds and wild ideas to discover the next legendary game." />
+  <title>GAMEFORGE — Infinite Game Alchemy</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div><div class="grain"></div>
+  <div id="app" class="app">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" aria-label="GameForge home">
+        <div class="brand-mark"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M14 17h20l5 9-5 8-7-6H21l-7 6-5-8 5-9Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><path d="M18 20v9M13.5 24.5h9M30 22h.1M34 26h.1" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></div>
+        <span><b>GAME<span>FORGE</span></b><small>INFINITE ALCHEMY</small></span>
+      </a>
+      <div class="nav-label">YOUR STUDIO</div>
+      <nav class="nav">
+        <button class="nav-button active" data-view="forge"><span class="nav-icon">✦</span> Forge Lab <span class="nav-shortcut">01</span></button>
+        <button class="nav-button" data-view="collection"><span class="nav-icon">▦</span> Collection <span class="nav-count" id="navCollectionCount">12</span></button>
+        <button class="nav-button" data-view="recipes"><span class="nav-icon">⌁</span> Recipe Book</button>
+        <button class="nav-button" data-view="achievements"><span class="nav-icon">♕</span> Achievements</button>
+      </nav>
+      <div class="sidebar-rule"></div>
+      <div class="nav-label">STUDIO TOOLS</div>
+      <nav class="nav">
+        <button class="nav-button" id="hintButton"><span class="nav-icon">✧</span> Get a Hint <span class="keycap">H</span></button>
+        <button class="nav-button" id="settingsButton"><span class="nav-icon">⚙</span> Settings</button>
+        <button class="nav-button" id="howButton"><span class="nav-icon">?</span> How to Play</button>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <div class="sidebar-challenge">
+        <div class="challenge-heading"><span class="pulsedot"></span> CREATOR'S MISSION</div>
+        <h3>Dream. Combine.<br><em>Discover.</em></h3>
+        <p>Can you forge a legendary game from nothing?</p>
+        <div class="mission-progress"><span id="missionProgress"></span></div>
+        <div class="mission-foot"><span id="missionText">0 / 25 discoveries</span><span>✦</span></div>
+      </div>
+      <div class="sidebar-profile"><div class="avatar">G</div><span><b>Creative Director</b><small>Level <span id="userLevel">1</span> · Indie Studio</small></span><span class="profile-star">✦</span></div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="mobile-logo">✦ GAMEFORGE</div>
+        <div class="breadcrumbs"><span>STUDIO</span><span class="crumb-chevron">›</span><b id="crumbPage">Forge Lab</b></div>
+        <div class="top-actions">
+          <div class="mini-stat"><span class="mini-stat-icon">✦</span><span id="topDiscoveries">0</span><small>CREATED</small></div>
+          <div class="mini-stat streak-stat"><span>⚡</span><span id="topStreak">0</span><small>STREAK</small></div>
+          <button class="icon-btn" id="soundButton" title="Toggle sound" aria-label="Toggle sound">♫</button>
+          <button class="icon-btn mobile-menu" id="mobileMenu" aria-label="Open menu">☰</button>
+        </div>
+      </header>
+
+      <section id="forgeView" class="view">
+        <div class="hero-intro">
+          <div class="eyebrow"><span class="eyebrow-line"></span> THE WORLD IS YOUR GAME ENGINE <span class="eyebrow-line"></span></div>
+          <h1>Every great game starts<br>with a <em>crazy idea.</em></h1>
+          <p>Combine anything. Discover everything. What will you create next?</p>
+        </div>
+
+        <div class="workspace-layout">
+          <section class="forge-panel panel">
+            <div class="panel-heading"><div><span class="section-overline">01 / THE CREATION STATION</span><h2>Forge something new <span class="new-spark">✧</span></h2></div><button class="clear-btn" id="clearButton" title="Clear crafting slots">↺ <span>Clear</span></button></div>
+            <div class="mixing-area" id="mixingArea">
+              <div class="mix-orbit orbit-one"></div><div class="mix-orbit orbit-two"></div>
+              <div class="mix-center-glow"></div>
+              <div class="slot-area">
+                <button class="ingredient-slot" id="slotOne" data-slot="0" aria-label="Choose first element"><span class="slot-plus">+</span><span class="slot-label">FIRST ELEMENT</span><small>Click or drag here</small></button>
+                <div class="operator"><span>+</span><div class="operator-glow"></div></div>
+                <button class="ingredient-slot" id="slotTwo" data-slot="1" aria-label="Choose second element"><span class="slot-plus">+</span><span class="slot-label">SECOND ELEMENT</span><small>Click or drag here</small></button>
+              </div>
+              <div class="mixing-hint">TAP AN ELEMENT BELOW OR DRAG IT INTO A SLOT</div>
+              <button class="forge-button" id="forgeButton" disabled><span class="button-icon">✦</span><span id="forgeText">SELECT TWO ELEMENTS</span><span class="button-arrow">→</span></button>
+            </div>
+            <div class="forge-status"><div><span class="status-pip"></span><span id="engineStatus">Alchemy engine online</span></div><span id="comboStatus">Boundless possibilities await</span></div>
+          </section>
+
+          <aside class="right-panel">
+            <div class="feature-panel panel">
+              <div class="feature-head"><span class="section-overline">THE SPOTLIGHT</span><span class="feature-label">✦ FEATURED DISCOVERY</span></div>
+              <div class="featured-orb"><div class="orb-ring one"></div><div class="orb-ring two"></div><div id="featureIcon" class="feature-icon">🏆</div></div>
+              <div class="featured-content"><span id="featureRarity" class="rarity-label legendary">LEGENDARY</span><h3 id="featureName">The Masterpiece</h3><p id="featureDescription">Every legendary game starts with one incredible idea.</p></div>
+              <div class="feature-footer"><span>YOUR NEXT BIG HIT?</span><span class="twinkle">✦ ✧</span></div>
+            </div>
+            <div class="stat-cards">
+              <div class="stat-card panel"><div class="stat-top"><span class="stat-visual purple">◈</span><span class="stat-arrow">↗</span></div><div class="stat-value" id="statUnique">12</div><div class="stat-caption">Elements unlocked</div><div class="stat-foot">Expand your universe</div></div>
+              <div class="stat-card panel"><div class="stat-top"><span class="stat-visual gold">⚡</span><span class="stat-arrow">↗</span></div><div class="stat-value" id="statCombos">0</div><div class="stat-caption">Successful forges</div><div class="stat-foot">Every idea counts</div></div>
+            </div>
+          </aside>
+        </div>
+
+        <section class="library-panel panel">
+          <div class="library-head"><div><span class="section-overline">02 / YOUR CREATIVE TOOLBOX</span><h2>Elements <span id="libraryCount" class="light-count">12 discovered</span></h2></div><div class="library-controls"><label class="search-field"><span>⌕</span><input id="elementSearch" type="search" placeholder="Search elements..." autocomplete="off" aria-label="Search elements"/><kbd>/</kbd></label><select id="sortElements" aria-label="Sort elements"><option value="recent">Recently unlocked</option><option value="name">A to Z</option><option value="rarity">Highest rarity</option></select></div></div>
+          <div class="filter-tabs" id="filterTabs"><button class="filter active" data-filter="all">All elements</button><button class="filter" data-filter="base">Foundations</button><button class="filter" data-filter="genre">Genres</button><button class="filter" data-filter="mechanic">Mechanics</button><button class="filter" data-filter="game">Games</button><button class="filter" data-filter="other">More</button></div>
+          <div class="element-grid" id="elementGrid"></div>
+          <div class="empty-state hidden" id="emptyElements"><span>⌕</span><h3>No elements found</h3><p>Try another search or discover something new.</p></div>
+          <div class="library-bottom"><span id="libraryFooter">The greatest discoveries are still ahead.</span><button class="text-link" id="expandLibrary">View all discoveries ↗</button></div>
+        </section>
+        <footer class="site-footer"><span>✦ GAMEFORGE <span>— IDEAS ARE LIMITLESS</span></span><span>Crafted for curious minds · Autosaves locally</span></footer>
+      </section>
+
+      <section id="collectionView" class="view hidden sub-view"><div class="page-heading"><span class="section-overline">YOUR ENTIRE UNIVERSE</span><h1>The Collection<span class="heading-dot">.</span></h1><p>Every idea you have ever brought to life, all in one place.</p></div><div class="collection-summary panel"><span>✦</span><strong id="collectionHeadline">12</strong><span>unique elements unlocked</span><div class="summary-separator"></div><strong id="collectionLegendary">0</strong><span>legendary creations</span></div><div id="collectionGrid" class="element-grid full-grid"></div></section>
+      <section id="recipesView" class="view hidden sub-view"><div class="page-heading"><span class="section-overline">YOUR CREATIVE HISTORY</span><h1>Recipe Book<span class="heading-dot">.</span></h1><p>A record of every winning combination. Your imagination, documented.</p></div><div class="recipe-toolbar"><div id="recipeCount">0 recipes discovered</div><button class="clear-btn" id="exportButton">↓ Export save</button></div><div id="recipesList" class="recipes-list"></div><div id="recipesEmpty" class="empty-large panel">⚗️<h2>No recipes yet</h2><p>Combine two elements in the Forge Lab to begin your recipe book.</p><button class="secondary-action" data-go-forge>Go to Forge Lab →</button></div></section>
+      <section id="achievementsView" class="view hidden sub-view"><div class="page-heading"><span class="section-overline">THE JOURNEY TO GREATNESS</span><h1>Achievements<span class="heading-dot">.</span></h1><p>Every visionary has a story. This is yours.</p></div><div id="achievementsGrid" class="achievements-grid"></div></section>
+    </main>
+  </div>
+
+  <div id="toastLayer" class="toast-layer" aria-live="polite"></div>
+  <div id="discoveryOverlay" class="discovery-overlay hidden" role="dialog" aria-modal="true" aria-label="New discovery"><div class="discovery-shade"></div><div class="discovery-rays"></div><div class="discovery-modal"><div class="discovery-kicker">✦ NEW DISCOVERY ✦</div><div class="discovery-icon-shell"><div class="discovery-ring"></div><div id="discoveryIcon" class="discovery-icon">🎮</div></div><div id="discoveryRarity" class="rarity-label rare">RARE</div><h2 id="discoveryName">New Game</h2><p id="discoveryDesc">A new universe unfolds.</p><div id="discoveryFormula" class="discovery-formula"></div><button id="discoveryContinue" class="secondary-action">KEEP CREATING <span>→</span></button><div class="discovery-tip">SPACE OR ENTER TO CONTINUE</div></div><div id="confetti" class="confetti"></div></div>
+  <div id="settingsOverlay" class="dialog-overlay hidden" role="dialog" aria-modal="true" aria-label="Settings"><div class="dialog panel"><div class="dialog-title"><div><span class="section-overline">YOUR STUDIO, YOUR RULES</span><h2>Settings</h2></div><button class="dialog-close" data-close-dialog>✕</button></div><div class="setting-block"><h3>Creative AI Engine <span id="aiIndicator">OPTIONAL</span></h3><p>GameForge runs fully offline. For genuinely AI-generated creations, deploy the included serverless API and connect its URL here. Never paste API keys into this page.</p><label class="setting-label" for="apiEndpoint">API ENDPOINT</label><input class="setting-input" id="apiEndpoint" type="url" placeholder="https://your-site.vercel.app/api/combine" spellcheck="false"/><div class="setting-helper">Leave blank for automatic same-origin API when hosted on Vercel. GitHub Pages works offline without a server.</div></div><div class="setting-row"><div><strong>Sound effects</strong><small>Arcade-inspired feedback for every creation</small></div><button id="soundToggle" class="toggle on" role="switch" aria-checked="true"><span></span></button></div><div class="setting-row"><div><strong>Discovery animations</strong><small>Celebrate first-time creations</small></div><button id="motionToggle" class="toggle on" role="switch" aria-checked="true"><span></span></button></div><div class="dialog-actions"><button class="danger-button" id="resetButton">Reset progress</button><button class="secondary-action" id="saveSettings">Save settings →</button></div><div class="setting-foot"><button id="importButton">↑ Import save</button><button id="exportSettingsButton">↓ Export save</button><input type="file" id="importInput" accept="application/json,.json" hidden /></div></div></div>
+  <div id="howOverlay" class="dialog-overlay hidden" role="dialog" aria-modal="true" aria-label="How to play"><div class="dialog panel how-dialog"><div class="dialog-title"><div><span class="section-overline">THE CREATOR'S GUIDE</span><h2>How to Play</h2></div><button class="dialog-close" data-close-dialog>✕</button></div><div class="how-steps"><div><span class="step-number">01</span><div><h3>Pick two elements</h3><p>Select an element twice, select two different elements, or drag them into the forge slots.</p></div></div><div><span class="step-number">02</span><div><h3>Fuse them together</h3><p>Press <b>FORGE CREATION</b> to discover a surprising video-game idea. Order never matters.</p></div></div><div><span class="step-number">03</span><div><h3>Forge infinitely</h3><p>Your new discoveries become ingredients. Find all the classic recipes or generate never-ending ideas. Your progress autosaves.</p></div></div></div><button class="secondary-action" data-close-dialog>LET'S CREATE →</button></div></div>
+  <script src="app.js" defer></script>
+</body>
+</html>
