@@ -123,7 +123,7 @@ function renderEditor(){
   for(let p=ROLL_MAX;p>=ROLL_MIN;p--){let y=(ROLL_MAX-p)*PITCH_HEIGHT;let black=[1,3,6,8,10].includes(p%12);pitchLabels+=`<div class="pitch-label ${black?'black-note':''} ${p%12===0?'c-note':''}">${pitchName(p)}</div>`;if(black||p%12===0)pitchBands+=`<div class="${black?'roll-black':'roll-c'}" style="top:${y}px"></div>`;}
   editor.innerHTML=`<div class="roll-shell"><div class="pitch-labels">${pitchLabels}</div><div class="roll-main" id="rollMain" style="--track:${currentTrack().color}">${pitchBands}<div class="roll-notes" id="rollNotes"></div><div class="step-play-marker" id="rollMarker" style="display:none"></div></div></div><div class="piano-keyboard"><div class="keyboard-info"><strong>Live keyboard</strong><small>Z to M · C4–C5</small></div><div class="keys-visual" id="keysVisual"></div></div>`;
   makeVisualKeyboard();renderPianoNotes();
-  editor.scrollTop=310;
+  editor.scrollTop=475;
  }else if(ui.view==='drums')renderDrums();else renderMixer();
  updatePlayhead();
 }
