@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#101017" />
+<title>Waveroom — Music Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<svg class="icons" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+<symbol id="i-wave" viewBox="0 0 24 24"><path d="M2 13V9m4 10V5m4 16V3m4 13V8m4 10V6m4 9v-6"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7z" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-pause" viewBox="0 0 24 24"><path d="M7 5h3v14H7zm7 0h3v14h-3z" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1.5" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-loop" viewBox="0 0 24 24"><path d="M17 2l4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4m14-1v2a3 3 0 0 1-3 3H3"/></symbol>
+<symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 17v3h16v-3"/></symbol>
+<symbol id="i-save" viewBox="0 0 24 24"><path d="M4 3h14l3 3v15H3V3h1m3 0v7h10V3M6 21v-8h12v8"/></symbol>
+<symbol id="i-folder" viewBox="0 0 24 24"><path d="M2 5h8l2 3h10v12H2z"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 4v16M4 12h16"/></symbol>
+<symbol id="i-headphones" viewBox="0 0 24 24"><path d="M3 14v-3a9 9 0 0 1 18 0v3M3 14h4v7H5a2 2 0 0 1-2-2zm14 0h4v5a2 2 0 0 1-2 2h-2z"/></symbol>
+<symbol id="i-settings" viewBox="0 0 24 24"><path d="M10 2h4l1 3 2 1 3-1 2 4-2 2v2l2 2-2 4-3-1-2 1-1 3h-4l-1-3-2-1-3 1-2-4 2-2v-2L2 9l2-4 3 1 2-1z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+<symbol id="i-keyboard" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M6 5v8h3V5m3 0v8h3V5m3 0v8h2M6 13v6m6-6v6m6-6v6"/></symbol>
+<symbol id="i-sliders" viewBox="0 0 24 24"><path d="M5 3v6m0 6v6m7-18v11m0 6v1m7-18v3m0 6v9M2 9h6M9 14h6m1-8h6"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 14h10l1-14M10 11v6m4-6v6"/></symbol>
+<symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 10v7M12 6v1"/></symbol>
+<symbol id="i-chevron" viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></symbol>
+<symbol id="i-sparkle" viewBox="0 0 24 24"><path d="m12 2 2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"/></symbol>
+</svg>
+<div class="app-shell">
+<header class="app-header">
+  <div class="brand"><div class="brand-icon"><svg><use href="#i-wave"/></svg></div><div class="brand-copy"><strong>waveroom<span>.</span></strong><small>MUSIC STUDIO</small></div></div>
+  <div class="header-divider"></div>
+  <div class="project-name-wrap"><span class="dim">PROJECT</span><input id="projectName" aria-label="Project name" spellcheck="false" maxlength="64" value="Midnight Drive"/><span class="saved-indicator" id="savedStatus">● Saved locally</span></div>
+  <div class="header-spacer"></div>
+  <button class="text-button top-action" id="newProject" title="Create blank project"><svg><use href="#i-plus"/></svg> New</button>
+  <button class="text-button top-action" id="importProject" title="Import project JSON"><svg><use href="#i-folder"/></svg> Open</button>
+  <button class="text-button top-action" id="saveProject" title="Download project JSON"><svg><use href="#i-save"/></svg> Save</button>
+  <button class="primary-button" id="exportWav"><svg><use href="#i-download"/></svg> Export WAV</button>
+</header>
+<section class="transport">
+ <div class="transport-controls"><button class="icon-button" id="toStart" title="Jump to start"><span class="skip-icon">Ⅰ◀</span></button><button class="stop-button" id="stopBtn" title="Stop (Space)"><svg><use href="#i-stop"/></svg></button><button class="play-button" id="playBtn" title="Play/Pause (Space)"><svg><use href="#i-play"/></svg></button><button id="recordBtn" class="record-button" title="Arm recording; play notes with keyboard"><span></span></button></div>
+ <div class="lcd-display"><span class="lcd-label">POSITION</span><div id="timeDisplay">01 : 01 : 00</div></div>
+ <div class="transport-item"><span class="transport-label">TEMPO</span><div class="number-input"><input id="bpmInput" aria-label="Tempo in BPM" type="number" min="50" max="240" value="124"/><span>BPM</span></div></div>
+ <div class="transport-item swing-group"><span class="transport-label">SWING</span><div class="number-input"><input id="swingInput" aria-label="Swing percentage" type="number" min="0" max="65" value="8"/><span>%</span></div></div>
+ <div class="transport-divider"></div>
+ <button class="transport-toggle on" id="loopBtn" title="Loop arrangement"><svg><use href="#i-loop"/></svg> <span>Loop</span></button>
+ <button class="transport-toggle" id="metronomeBtn" title="Toggle metronome">♩ <span>Metronome</span></button>
+ <div class="transport-spacer"></div>
+ <div class="master-volume"><svg><use href="#i-headphones"/></svg><input type="range" min="0" max="100" value="76" id="masterVolume" aria-label="Master volume"/><span id="masterValue">76%</span></div>
+ <div class="meters" id="masterMeters"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+</section>
+<div class="workspace">
+ <aside class="left-panel">
+  <div class="side-title"> <div><span class="overline">SESSION</span><h2>Tracks <span id="trackCount">8</span></h2></div><button title="Create a new instrument track" class="small-icon-button" id="addTrack"><svg><use href="#i-plus"/></svg></button></div>
+  <div class="side-subtitle">INSTRUMENTS <span>8-bar loop</span></div>
+  <div id="trackList" class="track-list"></div>
+  <div class="sidebar-footer"><div class="sidebar-tip"><span class="tip-icon"><svg><use href="#i-sparkle"/></svg></span><div><strong>Make something great</strong><small>Pick a track, then draw notes below.</small></div></div></div>
+ </aside>
+ <main class="main-panel">
+  <div class="section-bar"><div class="section-info"><div class="green-dot"></div><strong>Arrangement</strong><span class="section-subtitle">Drag your sound into a song</span></div><div class="section-actions"><span class="small-label">8 BARS</span><button class="quiet-button" id="demoBtn" title="Load the starter demo">Load demo</button></div></div>
+  <div class="arrangement-scroller" id="arrangementScroller"><div class="arrangement" id="arrangement"><div class="arrangement-ruler" id="arrangementRuler"></div><div class="arrangement-tracks" id="arrangementTracks"></div><div class="arrangement-playhead" id="arrangementPlayhead"><div class="playhead-cap"></div></div></div></div>
+  <div class="editor-bar"><div class="editor-tabs"><button class="editor-tab active" data-view="piano"><svg><use href="#i-keyboard"/></svg> Piano roll</button><button class="editor-tab" data-view="drums"><svg><use href="#i-grid"/></svg> Drum machine</button><button class="editor-tab" data-view="mixer"><svg><use href="#i-sliders"/></svg> Mixer</button></div><div class="editor-toolbar"><span class="editor-target" id="editorTarget">● Keys</span><span class="tool-divider"></span><span class="small-label">PATTERN</span><div class="pattern-switch" id="patternSwitch"><button class="active" data-pattern="A">A</button><button data-pattern="B">B</button><button data-pattern="C">C</button><button data-pattern="D">D</button></div><button class="small-icon-button" id="clearPattern" title="Clear selected pattern"><svg><use href="#i-trash"/></svg></button></div></div>
+  <div class="editor-area" id="editorArea"></div>
+  <div class="piano-footer" id="pianoFooter"><span><kbd>SPACE</kbd> Play / pause</span><span><kbd>CLICK</kbd> Draw notes</span><span><kbd>DRAG</kbd> Lengthen notes</span><span><kbd>RIGHT CLICK</kbd> Delete</span><span><kbd>Z–M</kbd> Live piano</span></div>
+ </main>
+ <aside class="right-panel"><div class="inspector-head"><span class="overline">SOUND DESIGN</span><h2>Instrument <svg><use href="#i-settings"/></svg></h2></div><div id="inspector"></div><div class="help-card"><svg><use href="#i-info"/></svg><div><strong>How does it work?</strong><p>Click clips in Arrangement to cycle A–D and empty. Use the editor to add notes. Everything saves automatically in this browser.</p><button id="helpBtn">See keyboard shortcuts →</button></div></div></aside>
+</div>
+<footer class="statusbar"><span><span class="status-live"></span> AUDIO ENGINE <strong id="engineStatus">READY</strong></span><span class="footer-mid">Waveroom Studio <span class="middle-dot">·</span> Made for the browser</span><span id="statusMessage">No plugins needed</span><span class="status-right">WEB AUDIO <span class="middle-dot">/</span> STEREO</span></footer>
+</div>
+<input id="fileInput" type="file" accept=".json,application/json" hidden />
+<div class="toast" id="toast" role="status"></div>
+<div class="modal-backdrop hidden" id="helpModal"><div class="help-modal"><div class="modal-head"><div><span class="overline">QUICK START</span><h2>Make music in Waveroom</h2></div><button class="small-icon-button" id="closeHelp">✕</button></div><div class="shortcut-grid"><div><kbd>Space</kbd><span>Play / pause</span></div><div><kbd>Esc</kbd><span>Stop</span></div><div><kbd>Z S X D C V G B H N J M</kbd><span>Play chromatic notes (C4–B4)</span></div><div><kbd>Double click</kbd><span>Remove a piano note</span></div><div><kbd>Right click</kbd><span>Remove a note or clip</span></div><div><kbd>Click + drag</kbd><span>Draw longer piano notes</span></div></div><p>The 8-bar arrangement plays from left to right. Each clip refers to an editable A/B/C/D pattern. Record mode writes your live keyboard notes into the armed melodic track while the transport is running. WAV export renders the entire arrangement directly in the browser.</p><button class="primary-button modal-gotit" id="gotItBtn">Let's make music</button></div></div>
+<script src="app.js" defer></script>
+</body>
+</html>
