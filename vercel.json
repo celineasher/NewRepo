@@ -1,0 +1,4 @@
+{
+  "version": 2,
+  "functions": { "api/combine.js": { "maxDuration": 15 } }
+}
