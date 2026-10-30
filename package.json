@@ -1,0 +1,11 @@
+{
+  "name": "gameforge-infinite-alchemy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A polished video game-themed infinite alchemy browser game with an optional OpenAI fusion backend.",
+  "scripts": {
+    "start": "python3 -m http.server 8080",
+    "test": "node --check app.js && node --check api/combine.js"
+  },
+  "engines": { "node": ">=18" }
+}
