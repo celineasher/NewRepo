@@ -1,0 +1,64 @@
+name: Verity Studio Author property bridge validation
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'verity-mac/repair-studio-author-v133.py'
+      - 'verity-mac/repair-studio-author.sh'
+      - '.github/workflows/verity-studio-author-v133.yml'
+  workflow_dispatch:
+
+jobs:
+  test-bridge-author-repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify Bash and Python syntax
+        run: |
+          bash -n verity-mac/repair-studio-author.sh
+          python3 -m py_compile verity-mac/repair-studio-author-v133.py
+      - name: Verify SHA of exact pinned repair download
+        shell: bash
+        run: |
+          set -euo pipefail
+          url="$(sed -n "s/^url='\([^']*\)'/\1/p" verity-mac/repair-studio-author.sh)"
+          expected="$(sed -n "s/^expected='\([0-9a-f]*\)'/\1/p" verity-mac/repair-studio-author.sh)"
+          test "$(printf '%s' "$expected" | wc -c)" -eq 64
+          curl -fsSL --retry 2 "$url" -o downloaded.py
+          echo "$expected  downloaded.py" | sha256sum -c -
+          cmp downloaded.py verity-mac/repair-studio-author-v133.py
+      - name: Test bridge patch and regression cases
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir source
+          awk '/^__VERITY_STUDIO_PAYLOAD__$/ {on=1;next}on {print}' verity-mac/install-studio-mode.sh | base64 -d | tar xzf - -C source
+          test -f source/studio_agent.py
+          cp source/studio_agent.py source/legacy.py
+          python3 verity-mac/verity-studio-luau-guard-v132.py source/studio_agent.py
+          python3 verity-mac/repair-studio-author-v133.py source/studio_agent.py
+          python3 verity-mac/repair-studio-author-v133.py source/studio_agent.py
+          python3 verity-mac/repair-studio-author-v133.py source/legacy.py
+          python3 -m py_compile source/studio_agent.py source/legacy.py
+          python3 - <<'PY'
+          from pathlib import Path
+          import ast, re
+          for filename in ('studio_agent.py', 'legacy.py'):
+              tree = ast.parse((Path('source') / filename).read_text())
+              guard = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name=='validate_generated_luau')
+              class MCPError(RuntimeError): pass
+              scope = {'re':re, 'MCPError':MCPError}
+              exec(compile(ast.Module(body=[guard],type_ignores=[]), filename, 'exec'), scope)
+              f = scope['validate_generated_luau']
+              for bad in ('part.DeathScript.Author', 'local x = obj.Author', 'local x = obj["Author"]',
+                          "local ds=Instance.new('LocalScript'); ds.Author='name'"):
+                  try: f(bad)
+                  except MCPError: pass
+                  else: raise AssertionError(f'Not rejected: {bad}')
+              for good in ("local s=Instance.new('Script'); s:SetAttribute('Author','Verity')",
+                           'local p=Instance.new("Part"); p.Parent=workspace'):
+                  f(good)
+          print('Validation and idempotency cases passed')
+          PY
