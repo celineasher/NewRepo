@@ -29,3 +29,12 @@ printf '[Verity Studio] Installing MCP timeout/diagnostic fix…\n'
 curl --proto '=https' --tlsv1.2 --fail --location --silent --show-error --retry 2 "$repair_url" -o "$repair"
 bash -n "$repair"
 bash "$repair"
+
+# Keep the Luau code-quality guard when Studio Mode is installed again.
+guard_url='https://raw.githubusercontent.com/celineasher/NewRepo/master/verity-mac/repair-luau-property.sh'
+guard="$(mktemp "$HOME/Library/Caches/verity-studio-guard-installer.XXXXXXXX")"
+trap 'rm -f "$installer" "$repair" "$guard"' EXIT
+printf '[Verity Studio] Installing Script/LocalScript property validation…\n'
+curl --proto '=https' --tlsv1.2 --fail --location --silent --show-error --retry 2 "$guard_url" -o "$guard"
+bash -n "$guard"
+bash "$guard"
