@@ -1,3 +1,18 @@
+# Verity v1.2.6 — Hear Yourself freeze fix
+
+When enabling **Hear Yourself**, Verity now routes microphone sidetone through a **separate output-only audio engine**. CoreAudio output switching and monitor shutdown run on a dedicated audio queue, so toggling monitoring no longer rebuilds the active speech-recognition graph on the UI thread. Mic level monitoring and speech recognition continue independently. Turn live monitoring on only with headphones to avoid feedback.
+
+Update after quitting Verity:
+
+```bash
+pkill -x Verity 2>/dev/null || true
+curl -fsSL https://raw.githubusercontent.com/celineasher/NewRepo/master/verity-mac/install.sh | bash
+```
+
+The installer checks the exact base-source hash and patch SHA-256 before replacing your app. Existing preferences, chat history, and Fish Audio key are preserved. The app is compiled on macOS by GitHub Actions; interactive device testing must be done with your Mac's microphones and audio interface.
+
+---
+
 # Verity for macOS — v1.2.4
 
 Native macOS pixel-art AI desktop companion with local Ollama chat, voice conversations, wake-word and push-to-talk modes, selectable microphones, and optional Fish Audio TTS.
