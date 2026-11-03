@@ -19,6 +19,7 @@ jobs:
           bash -n verity-mac/install.sh
           bash -n verity-mac/install-verity.sh
           bash -n verity-mac/setup-deepseek-local.sh
+          bash -n verity-mac/use-deepseek-in-verity.sh
       - name: Build newest GitHub Verity without launching
         env:
           CI: "1"
