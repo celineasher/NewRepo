@@ -1,0 +1,33 @@
+name: Verity Studio bridge repair integrity
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'verity-mac/repair-studio-bridge.sh'
+      - 'verity-mac/fix-studio-bridge-1.3.1.py'
+      - '.github/workflows/verity-studio-bridge-check.yml'
+  workflow_dispatch:
+
+jobs:
+  verify-studio-repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check repair shell syntax
+        run: bash -n verity-mac/repair-studio-bridge.sh
+      - name: Verify pinned patch content and syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          script="verity-mac/repair-studio-bridge.sh"
+          url="$(sed -n "s/^url='\([^']*\)'/\1/p" "$script")"
+          expected="$(sed -n "s/^expected='\([0-9a-f]*\)'/\1/p" "$script")"
+          test -n "$url"
+          test "${#expected}" -eq 64
+          curl -fsSL --retry 3 "$url" -o downloaded-patch.py
+          actual="$(sha256sum downloaded-patch.py | awk '{print $1}')"
+          printf 'Expected SHA-256: %s\nReceived SHA-256: %s\n' "$expected" "$actual"
+          test "$actual" = "$expected"
+          python3 -m py_compile downloaded-patch.py
