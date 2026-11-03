@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
-# Verity v1.2.5: UI stability update (version-matched patches); no sudo, no fuzzy patches.
+# Verity v1.2.6: independent nonblocking live mic monitor, verified source patches.
 set -euo pipefail
 ROOT='https://raw.githubusercontent.com/celineasher/NewRepo/master/verity-mac'
 BASE_SHA='eb5a4857d8a641088b9364521f4714c711a0cd25773c2738c5050391bc20cb9c'
 PATCH_123_SHA='2666396ed7f3af74ae0fc10cddf509010e27a5f7d60877fae5f3171ea10fe58f'
 PATCH_124_SHA='5da188808809010a3e3e081add0910b98136aefe429563c99d4477d1177aba7e'
 PATCH_125_SHA='cc1e7c15740fa5ed3c6a9b8c35e3640fb19e1af64c2a514c4da369b48e430ed7'
+PATCH_126_SHA='077846d342583b3144c4fee99f8e94bf912fd168f9572e68c575287653709cf4'
 info() { printf '\n[Verity] %s\n' "$*"; }
 fail() { printf '\n[Verity] ERROR: %s\n' "$*" >&2; exit 1; }
 launch=1
@@ -26,7 +27,7 @@ done
 if command -v pgrep >/dev/null 2>&1 && pgrep -x Verity >/dev/null 2>&1; then
   fail 'Quit Verity from the menu bar before updating.'
 fi
-work="$(mktemp -d "${TMPDIR:-/tmp}/verity-gh-125.XXXXXXXX")" || fail 'Could not make a temporary build directory.'
+work="$(mktemp -d "${TMPDIR:-/tmp}/verity-gh-126.XXXXXXXX")" || fail 'Could not make a temporary build directory.'
 trap 'rm -rf "$work"' EXIT
 info 'Downloading verified Verity source and version-matched UI and voice updates…'
 curl --proto '=https' --tlsv1.2 -fsSL --retry 3 "$ROOT/install-verity.sh" -o "$work/base.sh" || fail 'Failed to download base source.'
@@ -38,16 +39,19 @@ source_sha="$(shasum -a 256 "$work/source.zip" | awk '{print $1}')"
 unzip -q "$work/source.zip" -d "$work" || fail 'Cannot extract source archive.'
 bundle="$work/VerityMac"
 [[ -f "$bundle/Package.swift" ]] || fail 'Source archive missing Package.swift.'
-for release in 123 124 125; do
+for release in 123 124 125 126; do
   if [[ "$release" == 123 ]]; then
     asset='base-to-v1.2.3.patch.gz.b64'
     expected="$PATCH_123_SHA"
   elif [[ "$release" == 124 ]]; then
     asset='monitor-v1.2.4.patch.gz.b64'
     expected="$PATCH_124_SHA"
-  else
-    asset='ui-stability-v1.2.5.patch.gz.b64'
+  elif [[ "$release" == 125 ]]; then
+    asset='ui-stability-v1.2.6.patch.gz.b64'
     expected="$PATCH_125_SHA"
+  else
+    asset='monitor-freeze-v1.2.6.patch.gz.b64'
+    expected="$PATCH_126_SHA"
   fi
   curl --proto '=https' --tlsv1.2 -fsSL --retry 3 "$ROOT/$asset" -o "$work/$asset" || fail "Could not download $asset"
   base64 -D < "$work/$asset" | gzip -dc > "$work/$release.patch" || fail "Could not decode $asset"
@@ -55,9 +59,10 @@ for release in 123 124 125; do
   [[ "$actual" == "$expected" ]] || fail "Source patch checksum mismatch ($asset)."
   (cd "$bundle" && patch --batch --fuzz=0 -p1 < "$work/$release.patch") || fail "Patch for version $release did not match verified source. Existing app was not modified."
 done
-grep -Fq 'static let current = "1.2.5"' "$bundle/Sources/Verity/Version.swift" || fail 'Unexpected application version.'
+grep -Fq 'static let current = "1.2.6"' "$bundle/Sources/Verity/Version.swift" || fail 'Unexpected application version.'
+grep -Fq 'final class LiveMicMonitor' "$bundle/Sources/Verity/LiveMicMonitor.swift" || fail 'Nonblocking monitor implementation missing.' || fail 'Unexpected application version.'
 grep -Fq 'private var monitorSection: some View' "$bundle/Sources/Verity/Views.swift" || fail 'Voice Studio monitor controls are missing.'
-info 'Compiling Verity v1.2.5 (responsive Voice Studio)…'
+info 'Compiling Verity v1.2.6 (responsive Voice Studio)…'
 (cd "$bundle" && VERITY_SKIP_LAUNCH=1 bash ./build.command) || fail 'Swift compilation failed. The previous app is unchanged.'
 built="$bundle/dist/Verity.app"
 [[ -x "$built/Contents/MacOS/Verity" ]] || fail 'Build did not create a valid app.'
@@ -89,5 +94,5 @@ curl --proto '=https' --tlsv1.2 -fsSL "$url" -o "$tmp"
 bash "$tmp" "$@"
 UPDATER
 chmod +x "$HOME/bin/verity-update"
-info "Verity v1.2.5 installed: $destination"
+info "Verity v1.2.6 installed: $destination"
 if (( launch == 1 )); then open "$destination" || info 'Open Verity in ~/Applications.'; fi
