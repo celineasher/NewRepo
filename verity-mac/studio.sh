@@ -9,7 +9,7 @@ for cmd in curl mktemp bash; do
   command -v "$cmd" >/dev/null 2>&1 || { echo "[Verity Studio] Missing $cmd" >&2; exit 1; }
 done
 
-installer="$(mktemp "${TMPDIR:-/tmp}/verity-studio-install.XXXXXXXX.sh")"
+installer="$(mktemp "${TMPDIR:-/tmp}/verity-studio-install.XXXXXXXX")"
 trap 'rm -f "$installer"' EXIT
 url='https://raw.githubusercontent.com/celineasher/NewRepo/master/verity-mac/install-studio-mode.sh'
 
