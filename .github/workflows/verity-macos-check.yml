@@ -1,0 +1,28 @@
+name: Verity macOS build check
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'verity-mac/**'
+      - '.github/workflows/verity-macos-check.yml'
+  workflow_dispatch:
+
+jobs:
+  verify-macos:
+    runs-on: macos-15
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate Bash syntax
+        run: |
+          bash -n verity-mac/install.sh
+          bash -n verity-mac/install-verity.sh
+      - name: Build and install Verity without launching
+        env:
+          CI: "1"
+        run: bash verity-mac/install-verity.sh --no-launch
+      - name: Check app binary
+        run: |
+          test -x "$HOME/Applications/Verity.app/Contents/MacOS/Verity"
+          file "$HOME/Applications/Verity.app/Contents/MacOS/Verity"
