@@ -21,4 +21,4 @@ jobs:
           set -euo pipefail
           bash verity-mac/install.sh --no-launch
           test -x "$HOME/Applications/Verity.app/Contents/MacOS/Verity"
-          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$HOME/Applications/Verity.app/Contents/Info.plist")" = '1.2.6'
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$HOME/Applications/Verity.app/Contents/Info.plist")" = '1.2.7'
