@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Verity v1.2.1 for macOS — Voice Studio type-check fixes
+# Verity v1.2.2 for macOS — Voice Studio type-check fixes
 # The source ZIP is embedded below. Ollama model downloads, if any, are separate.
 set -euo pipefail
 
@@ -59,6 +59,15 @@ bundle="$workspace/unpacked/VerityMac"
 source_dir="$HOME/Library/Application Support/Verity/Source"
 mkdir -p "$source_dir"
 rsync -a "$bundle/" "$source_dir/"
+
+# v1.2.2: repair Fish Audio free-model selection, actionable voice errors,
+# and audible macOS fallback without changing the signed source archive.
+command -v python3 >/dev/null 2>&1 || fail 'Python 3 is required to update Verity (install Xcode Command Line Tools).'
+say 'Applying Verity v1.2.2 voice playback fix.'
+curl --proto '=https' --tlsv1.2 --fail --silent --show-error --location --retry 2 \
+  'https://raw.githubusercontent.com/celineasher/NewRepo/master/verity-mac/audio-hotfix-1.2.2.py' \
+  -o "$workspace/audio-hotfix.py" || fail 'Could not download the v1.2.2 audio fix from GitHub.'
+python3 "$workspace/audio-hotfix.py" "$source_dir" || fail 'Could not patch Swift voice sources; installation stopped safely.'
 
 # Verity v1.2.1 hotfix: update source BEFORE invoking Swift.
 # The bundled v1.2 source has a missing AVFoundation import and a large
