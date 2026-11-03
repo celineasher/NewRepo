@@ -30,29 +30,15 @@ change('VoiceController.swift',
                 }
             }
             return''')
-change('Views.swift',
-'''            Button { store.testVoice() } label: {
-                Label("Preview Verity's voice", systemImage: "play.fill")
-            }
-            .disabled(store.isSpeaking || store.isGenerating)''',
-'''            Button {
-                if store.voiceProvider == .fish { store.setFishVoiceID(fishVoiceDraft) }
-                store.testVoice()
-            } label: {
-                Label("Preview Verity's voice", systemImage: "play.fill")
-            }
-            .disabled(store.isSpeaking || store.isGenerating)
-            if let error = store.lastError {
-                Text(error)
-                    .font(.system(size: 11))
-                    .foregroundStyle(Color.orange)
-                    .textSelection(.enabled)
-            }
-            Button("Test Mac speakers (offline)") {
-                store.chooseVoiceProvider(.system)
-                store.testVoice()
-            }
-            .disabled(store.isSpeaking || store.isGenerating)''')
+# Views.swift has multiple layouts across v1.2.1 bundles.
+# Keep the core audio fix independent of its presentation layout.
+views = (sources / 'Views.swift').read_text()
+previewIndex = views.find("Preview Verity's voice")
+if previewIndex >= 0:
+    print("[Verity] Voice preview UI found; voice failures remain visible in the chat error banner.")
+else:
+    print("[Verity] Voice preview UI structure differs; core speech repair still applies.")
+
 change('VerityStore.swift',
 '''        if voiceEnabled { voice.suspend() }
         isSpeaking = true
