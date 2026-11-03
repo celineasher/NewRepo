@@ -47,7 +47,7 @@ for release in 123 124 125 126; do
     asset='monitor-v1.2.4.patch.gz.b64'
     expected="$PATCH_124_SHA"
   elif [[ "$release" == 125 ]]; then
-    asset='ui-stability-v1.2.6.patch.gz.b64'
+    asset='ui-stability-v1.2.5.patch.gz.b64'
     expected="$PATCH_125_SHA"
   else
     asset='monitor-freeze-v1.2.6.patch.gz.b64'
