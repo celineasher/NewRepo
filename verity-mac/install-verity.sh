@@ -147,6 +147,42 @@ if build_file.exists():
 print('[Verity] SwiftUI type-check and AVFoundation import fixes applied (v1.2.1).')
 VERITY_SWIFT_FIX
 
+# Verity 1.2.3 — apply verified wake-up greeting to the source BEFORE compilation.
+# Handles source version skew safely; no external unified patch or rej files.
+python3 - "$source_dir" <<'VERITY_WAKE123'
+from pathlib import Path
+import re, sys
+
+base = Path(sys.argv[1])
+voice_path = base / 'Sources/Verity/VoiceController.swift'
+version_path = base / 'Sources/Verity/Version.swift'
+build_path = base / 'build.command'
+voice = voice_path.read_text()
+old = '                return tail.trimmingCharacters(in: .whitespacesAndNewlines)'
+new = '''                let command = tail.trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters))
+                // A wake-up greeting is itself a request, even without a question.
+                return command.isEmpty ? "Say hello to me briefly and ask how you can help." : command'''
+if old in voice:
+    voice_path.write_text(voice.replace(old, new, 1))
+elif new not in voice:
+    sys.exit('VoiceController.swift: unexpected wake-word source; update refused')
+
+version = version_path.read_text()
+version, n = re.subn(r'(static let current\s*=\s*)"[0-9]+(?:\.[0-9]+){1,2}"',
+                      r'\g<1>"1.2.3"', version, count=1)
+if n != 1:
+    sys.exit('Version.swift: missing version marker')
+version_path.write_text(version)
+
+build = build_path.read_text()
+build, n = re.subn(r'(<key>CFBundleShortVersionString</key><string>)[^<]+(</string>)',
+                   r'\g<1>1.2.3\2', build, count=1)
+if n != 1:
+    sys.exit('build.command: missing version marker')
+build_path.write_text(build)
+print('[Verity] Verified v1.2.3 voice greeting and app version source')
+VERITY_WAKE123
+
 say 'Compiling the native macOS app using Swift. This may take a few minutes on the first build.'
 if ! (cd "$source_dir" && VERITY_SKIP_LAUNCH=1 bash ./build.command); then
   fail 'The Swift build failed. Check the compiler errors above. Your previous app installation, if any, was not replaced.'
