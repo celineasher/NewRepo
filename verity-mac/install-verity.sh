@@ -238,12 +238,14 @@ mkdir -p "$HOME/bin"
 cat > "$HOME/bin/verity-update" <<'VERITY_UPDATER'
 #!/usr/bin/env bash
 set -euo pipefail
-source_dir="$HOME/Library/Application Support/Verity/Source"
-[[ -f "$source_dir/install.sh" ]] || { echo 'Verity source is missing. Reinstall using install-verity-v1.2.sh.' >&2; exit 1; }
-exec bash "$source_dir/install.sh" --github "$@"
+url='https://raw.githubusercontent.com/celineasher/NewRepo/master/verity-mac/install.sh'
+work="$(mktemp "${TMPDIR:-/tmp}/verity-update.XXXXXXXX")"
+trap 'rm -f "$work"' EXIT
+curl --proto "=https" --tlsv1.2 -fsSL "$url" -o "$work"
+bash "$work" "$@"
 VERITY_UPDATER
 chmod +x "$HOME/bin/verity-update"
-say 'Future GitHub updates: bash ~/bin/verity-update (after publishing the repo via publish-github.sh)'
+say 'Future GitHub updates: bash ~/bin/verity-update'
 
 if (( launch == 1 )); then
   say 'Launching Verity. Look for the smiley in your macOS menu bar.'
