@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Verity v1.2.7: SSL 2+ mic channel routing and headphone output test.
+# Verity v1.2.8: fix slow Swift type-check of headphone output tone.
 set -euo pipefail
 ROOT='https://raw.githubusercontent.com/celineasher/NewRepo/master/verity-mac'
 BASE_SHA='eb5a4857d8a641088b9364521f4714c711a0cd25773c2738c5050391bc20cb9c'
@@ -63,10 +63,16 @@ for release in 123 124 125 126 127; do
   [[ "$actual" == "$expected" ]] || fail "Source patch checksum mismatch ($asset)."
   (cd "$bundle" && patch --batch --fuzz=0 -p1 < "$work/$release.patch") || fail "Patch for version $release did not match verified source. Existing app was not modified."
 done
-grep -Fq 'static let current = "1.2.7"' "$bundle/Sources/Verity/Version.swift" || fail 'Unexpected application version.'
-grep -Fq 'final class LiveMicMonitor' "$bundle/Sources/Verity/LiveMicMonitor.swift" || fail 'Nonblocking monitor implementation missing.' || fail 'Unexpected application version.'
+# v1.2.8: fix a Swift type-check timeout in the headphone output-test path.
+command -v python3 >/dev/null 2>&1 || fail 'Python 3 (Xcode Command Line Tools) is required.'
+curl --proto '=https' --tlsv1.2 -fsSL --retry 3 "$ROOT/fix-compiler-v1.2.8.py" -o "$work/compiler-fix.py" || fail 'Could not download the 1.2.8 compiler fix.'
+python3 "$work/compiler-fix.py" "$bundle" || fail 'The compiler fix did not match the verified source.'
+grep -Fq 'static let current = "1.2.8"' "$bundle/Sources/Verity/Version.swift" || fail 'Incorrect patched app version.'
+grep -Fq 'private func performOutputTest' "$bundle/Sources/Verity/LiveMicMonitor.swift" || fail 'Output-test compiler fix is missing.'
+
+grep -Fq 'final class LiveMicMonitor' "$bundle/Sources/Verity/LiveMicMonitor.swift" || fail 'Nonblocking monitor implementation missing.'
 grep -Fq 'private var monitorSection: some View' "$bundle/Sources/Verity/Views.swift" || fail 'Voice Studio monitor controls are missing.'
-info 'Compiling Verity v1.2.7 (SSL microphone routing and monitor output test)…'
+info 'Compiling Verity v1.2.8 (nonblocking microphone monitor and output-test compiler fix)…'
 (cd "$bundle" && VERITY_SKIP_LAUNCH=1 bash ./build.command) || fail 'Swift compilation failed. The previous app is unchanged.'
 built="$bundle/dist/Verity.app"
 [[ -x "$built/Contents/MacOS/Verity" ]] || fail 'Build did not create a valid app.'
@@ -98,5 +104,5 @@ curl --proto '=https' --tlsv1.2 -fsSL "$url" -o "$tmp"
 bash "$tmp" "$@"
 UPDATER
 chmod +x "$HOME/bin/verity-update"
-info "Verity v1.2.7 installed: $destination"
+info "Verity v1.2.8 installed: $destination"
 if (( launch == 1 )); then open "$destination" || info 'Open Verity in ~/Applications.'; fi
