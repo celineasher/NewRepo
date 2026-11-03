@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Verity v1.2.8: fix slow Swift type-check of headphone output tone.
+# Verity v1.2.9: fix slow Swift type-check of headphone output tone.
 set -euo pipefail
 ROOT='https://raw.githubusercontent.com/celineasher/NewRepo/master/verity-mac'
 BASE_SHA='eb5a4857d8a641088b9364521f4714c711a0cd25773c2738c5050391bc20cb9c'
@@ -67,12 +67,24 @@ done
 command -v python3 >/dev/null 2>&1 || fail 'Python 3 (Xcode Command Line Tools) is required.'
 curl --proto '=https' --tlsv1.2 -fsSL --retry 3 "$ROOT/fix-compiler-v1.2.8.py" -o "$work/compiler-fix.py" || fail 'Could not download the 1.2.8 compiler fix.'
 python3 "$work/compiler-fix.py" "$bundle" || fail 'The compiler fix did not match the verified source.'
-grep -Fq 'static let current = "1.2.8"' "$bundle/Sources/Verity/Version.swift" || fail 'Incorrect patched app version.'
+grep -Fq 'static let current = "1.2.8"' "$bundle/Sources/Verity/Version.swift" || fail 'Incorrect v1.2.8 base for GLM patch.'
 grep -Fq 'private func performOutputTest' "$bundle/Sources/Verity/LiveMicMonitor.swift" || fail 'Output-test compiler fix is missing.'
+
+# v1.2.9: switch between local Ollama and the free Z.ai GLM-4.7-Flash API.
+# The exact source patch is checksum-verified and applied with zero fuzz.
+asset='glm-v1.2.9.patch.gz.b64'
+curl --proto '=https' --tlsv1.2 -fsSL --retry 3 "$ROOT/$asset" -o "$work/$asset" || fail 'Could not download the GLM v1.2.9 patch.'
+base64 -D < "$work/$asset" | gzip -dc > "$work/129.patch" || fail 'Could not unpack the GLM v1.2.9 patch.'
+actual="$(shasum -a 256 "$work/129.patch" | awk '{print $1}')"
+[[ "$actual" == '8fac337a5f8b19948273e09bd161c9e8bb139966cda3859f3bd15e8e5a24943f' ]] || fail 'GLM v1.2.9 patch checksum mismatch.'
+(cd "$bundle" && patch --batch --fuzz=0 -p1 < "$work/129.patch") || fail 'GLM patch did not match v1.2.8 source; previous app unchanged.'
+grep -Fq 'static let current = "1.2.9"' "$bundle/Sources/Verity/Version.swift" || fail 'Unexpected GLM integration version.'
+grep -Fq 'struct ZAIClient' "$bundle/Sources/Verity/ZAIClient.swift" || fail 'Missing Z.ai client implementation.'
+
 
 grep -Fq 'final class LiveMicMonitor' "$bundle/Sources/Verity/LiveMicMonitor.swift" || fail 'Nonblocking monitor implementation missing.'
 grep -Fq 'private var monitorSection: some View' "$bundle/Sources/Verity/Views.swift" || fail 'Voice Studio monitor controls are missing.'
-info 'Compiling Verity v1.2.8 (nonblocking microphone monitor and output-test compiler fix)…'
+info 'Compiling Verity v1.2.9 (GLM-4.7-Flash API and local Ollama)…'
 (cd "$bundle" && VERITY_SKIP_LAUNCH=1 bash ./build.command) || fail 'Swift compilation failed. The previous app is unchanged.'
 built="$bundle/dist/Verity.app"
 [[ -x "$built/Contents/MacOS/Verity" ]] || fail 'Build did not create a valid app.'
@@ -104,5 +116,5 @@ curl --proto '=https' --tlsv1.2 -fsSL "$url" -o "$tmp"
 bash "$tmp" "$@"
 UPDATER
 chmod +x "$HOME/bin/verity-update"
-info "Verity v1.2.8 installed: $destination"
+info "Verity v1.2.9 installed: $destination"
 if (( launch == 1 )); then open "$destination" || info 'Open Verity in ~/Applications.'; fi
