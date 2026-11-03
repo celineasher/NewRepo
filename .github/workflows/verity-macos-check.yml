@@ -22,12 +22,13 @@ jobs:
         env:
           CI: "1"
         run: bash verity-mac/install.sh --no-launch
-      - name: Verify v1.2.4 app bundle
+      - name: Verify v1.2.5 app bundle
         run: |
           set -euo pipefail
           APP="$HOME/Applications/Verity.app"
           test -x "$APP/Contents/MacOS/Verity"
           VERSION=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$APP/Contents/Info.plist")
-          test "$VERSION" = '1.2.4'
+          test "$VERSION" = '1.2.5'
           grep -Fq 'private var monitorSection: some View' "$HOME/Library/Application Support/Verity/Source/Sources/Verity/Views.swift"
+          grep -Fq 'let onDone: () -> Void' "$HOME/Library/Application Support/Verity/Source/Sources/Verity/Views.swift"
           file "$APP/Contents/MacOS/Verity"
