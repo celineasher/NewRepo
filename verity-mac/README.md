@@ -1,38 +1,56 @@
-# Verity for macOS — GitHub installer
+# Verity for macOS — v1.2.4
 
-Pixel-art macOS desktop companion using Ollama for local AI chat. Verity includes a floating smiley pet, hands-free and wake-word speech, push-to-talk, mute/unmute, microphone selection and testing, and optional Fish Audio speech.
+Native macOS pixel-art AI desktop companion with local Ollama chat, voice conversations, wake-word and push-to-talk modes, selectable microphones, and optional Fish Audio TTS.
 
-## Install and update
+## Install or update
 
-Quit the running Verity app from its menu-bar icon, then run the **same command every time**:
+Quit Verity from its menu-bar icon, then paste:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/celineasher/NewRepo/master/verity-mac/install.sh | bash
 ```
 
-The small [install.sh](install.sh) downloads the latest [install-verity.sh](install-verity.sh). The latter verifies its bundled Swift source and compiles the app locally on macOS 13+ using Xcode Command Line Tools. GitHub-based installer updates can be made without changing this command.
+To inspect the installer first:
 
-After a successful installation, `bash ~/bin/verity-update` also fetches this GitHub installer.
+```bash
+curl -fL https://raw.githubusercontent.com/celineasher/NewRepo/master/verity-mac/install.sh -o ~/Downloads/verity-install.sh
+less ~/Downloads/verity-install.sh
+bash ~/Downloads/verity-install.sh
+```
 
-## Verity 1.2.3: wake-word greeting fix
+The script verifies a pinned embedded source archive and two exact-match, SHA-256-verified source updates, compiles using the installed Swift compiler, and replaces `~/Applications/Verity.app` only if compilation succeeds. It does not require sudo.
 
-The previous launcher failed with `build.command.rej` because it tried to patch a versioned source file with mismatched version context. That **external patch step has been removed from the online launcher**. The installer now applies a strictly checked greeting-source update and version marker before compilation.
+## New: Hear Yourself — Live Mic Monitoring
 
-With Voice Studio set to **Wake word** and the microphone unmuted, saying “Hello Verity” or “Hey Verity” on its own is treated as a greeting command. Hands-free mode accepts spoken questions without a wake phrase. Enable spoken replies, verify Ollama is running, and test microphone levels if no reply is heard.
+1. Open **Verity → Voice Studio** and grant microphone/speech-recognition permissions if prompted.
+2. Select your **Input Device** and click **Unmute**.
+3. In **LIVE MIC MONITOR / OUTPUT**, choose your **Output Device**, preferably headphones or your audio interface's headphone output.
+4. Turn on **Hear yourself** and speak normally. Use **Monitor volume** to adjust how loudly you hear your own microphone.
+5. Turn off **Hear yourself** for silence. Muting Verity also disables monitoring.
 
-## What to edit for future releases
+**Use headphones**: monitoring through speakers can produce loud acoustic feedback. The monitor is OFF at launch, pauses while Verity is responding, and in Push to Talk mode only sounds while capturing with TALK held.
 
-- `install.sh`: Stable download/update entry point; rarely needs changing.
-- `install-verity.sh`: Versioned install/build process and bundled application source; must be repackaged when changing Swift.
-- The installed editable Swift files live at `~/Library/Application Support/Verity/Source/`.
+The output selector controls **only live mic monitoring**. Voice AI replies and the separate 3-second mic test play through the macOS **System Output** (System Settings → Sound → Output).
 
-This repository is public. **Never commit private Fish Audio API keys or credentials.**
+Other features remain: Ollama models, optional Fish Audio voice, voice previews, microphone meter and 3-second record/play test.
 
-## Requirements
+## Updating source
 
-- macOS 13 or later
-- Xcode Command Line Tools / Swift compiler
-- Ollama installed with a suitable local model
-- Microphone and speech recognition permissions when using voice
+The stable entry-point file is `install.sh`; the existing `install-verity.sh` is an older, pinned base source archive. The launcher currently applies the following exact-match source updates before building:
 
-The installer and Swift source have undergone static validation, but this update has not yet been compiled or voice-tested on your personal Mac.
+- `base-to-v1.2.3.patch.gz.b64`
+- `monitor-v1.2.4.patch.gz.b64`
+
+Both are decoded and checked for SHA-256 integrity, so mismatches fail safely instead of installing a partially patched app. For larger future versions, replace the pinned source archive and update the launcher. The **Terminal command stays the same**.
+
+Compiled source is saved to `~/Library/Application Support/Verity/Source`.
+
+## Build verification
+
+The `verity-macos-check.yml` GitHub Actions workflow executes `bash verity-mac/install.sh --no-launch` on macOS, verifies the compiled app is executable, checks its version is `1.2.4`, and asserts that Voice Studio includes the new monitor UI.
+
+This validates compilation, but not live sound routing on a particular Mac, interface, or headset.
+
+## Privacy
+
+No microphone audio is uploaded by the live monitor or mic test. Ollama chat stays local by default. Fish Audio is optional and sends generated reply text to its external server when enabled. Fish Audio API keys are stored in macOS Keychain, not the public repository.
