@@ -1,3 +1,17 @@
+# Use local DeepSeek R1 8B in Verity
+
+Once DeepSeek R1 8B is installed with Ollama on your Athar SSD, switch Verity's saved AI provider and model using:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/celineasher/NewRepo/master/verity-mac/use-deepseek-in-verity.sh | bash
+```
+
+This **does not redownload the model or rebuild Verity**. It checks the local Ollama models, closes Verity if running, sets the `com.local.verity.companion` preferences to Ollama plus `deepseek-r1:8b`, and reopens Verity. The SSD storage configuration is unchanged. You can still select other models in Verity later.
+
+Manual equivalent: in Verity, choose **Ollama (Local)** as AI Provider, then refresh the models and choose **deepseek-r1:8b**.
+
+---
+
 # Install DeepSeek on Athar SSD
 
 The [local DeepSeek installer](./setup-deepseek-local.sh) now stores DeepSeek R1 8B on the mounted **Athar SSD** rather than assuming the Mac's internal storage. It uses an existing SSD model directory if one is already configured. By default it will create `/Volumes/Athar SSD/Ollama/models` only when needed.
