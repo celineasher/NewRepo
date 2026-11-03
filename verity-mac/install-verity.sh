@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Verity v1.2 for macOS — portable offline-source installer with Voice Studio
+# Verity v1.2.1 for macOS — Voice Studio type-check fixes
 # The source ZIP is embedded below. Ollama model downloads, if any, are separate.
 set -euo pipefail
 
@@ -59,6 +59,84 @@ bundle="$workspace/unpacked/VerityMac"
 source_dir="$HOME/Library/Application Support/Verity/Source"
 mkdir -p "$source_dir"
 rsync -a "$bundle/" "$source_dir/"
+
+# Verity v1.2.1 hotfix: update source BEFORE invoking Swift.
+# The bundled v1.2 source has a missing AVFoundation import and a large
+# SwiftUI settings expression that can exceed the macOS compiler's type-check limit.
+command -v python3 >/dev/null 2>&1 || fail 'python3 is needed for the v1.2.1 Swift source fix (install Xcode Command Line Tools).'
+python3 - "$source_dir/Sources/Verity/Views.swift" <<'VERITY_SWIFT_FIX'
+from pathlib import Path
+import sys
+
+path = Path(sys.argv[1])
+src = path.read_text()
+if 'import AVFoundation' not in src:
+    src = src.replace('import AppKit\n', 'import AppKit\nimport AVFoundation\n', 1)
+
+if 'private var voiceStudioTitleBar' not in src:
+    section = src.index('struct SettingsView: View {')
+    body_pos = src.index('    var body: some View {', section)
+    original_body = src[body_pos:]
+    head_start = original_body.index('            HStack {')
+    head_end = original_body.index('            Divider()', head_start)
+    mic_start = original_body.index('                    header("MICROPHONE CONTROL"')
+    mic_end = original_body.index('                    Divider()', mic_start)
+    speech_start = original_body.index('                    header("VERITY\'S SPEAKING VOICE"')
+    speech_end = original_body.index('                    Divider()', speech_start)
+    prefs_start = original_body.index('                    header("APP PREFERENCES"')
+    prefs_end = original_body.index('                }\n                .padding(24)', prefs_start)
+
+    sections = {
+        "voiceStudioTitleBar": original_body[head_start:head_end],
+        "voiceStudioMicSection": original_body[mic_start:mic_end],
+        "voiceStudioSpeechSection": original_body[speech_start:speech_end],
+        "voiceStudioPreferencesSection": original_body[prefs_start:prefs_end],
+    }
+    new_body = """    var body: some View {
+        VStack(spacing: 0) {
+            voiceStudioTitleBar
+            Divider()
+            ScrollView {
+                VStack(alignment: .leading, spacing: 19) {
+                    voiceStudioMicSection
+                    Divider()
+                    voiceStudioSpeechSection
+                    Divider()
+                    voiceStudioPreferencesSection
+                }
+                .padding(24)
+            }
+        }
+        .frame(width: 630, height: 780)
+        .background(Theme.background)
+        .preferredColorScheme(.dark)
+        .onAppear {
+            wakeDraft = store.wakePhrase
+            serverDraft = store.serverURL
+            fishVoiceDraft = store.fishVoiceID
+            store.refreshMicrophones()
+        }
+    }
+
+"""
+    for name, content in sections.items():
+        new_body += f'    private var {name}: some View {{\n'
+        if name == "voiceStudioTitleBar":
+            new_body += content
+        else:
+            new_body += '        VStack(alignment: .leading, spacing: 19) {\n' + content + '        }\n'
+        new_body += '    }\n\n'
+    src = src[:body_pos] + new_body + '}\n'
+
+path.write_text(src)
+version_file = path.parent / 'Version.swift'
+if version_file.exists():
+    version_file.write_text(version_file.read_text().replace('"1.2.0"', '"1.2.1"'))
+build_file = path.parents[2] / 'build.command'
+if build_file.exists():
+    build_file.write_text(build_file.read_text().replace('<string>1.2.0</string>', '<string>1.2.1</string>'))
+print('[Verity] SwiftUI type-check and AVFoundation import fixes applied (v1.2.1).')
+VERITY_SWIFT_FIX
 
 say 'Compiling the native macOS app using Swift. This may take a few minutes on the first build.'
 if ! (cd "$source_dir" && VERITY_SKIP_LAUNCH=1 bash ./build.command); then
