@@ -1,3 +1,36 @@
+# Local DeepSeek R1 8B for Verity
+
+DeepSeek-R1 8B is a **local Ollama model**, not the DeepSeek V4.1 Flash cloud API. It requires no DeepSeek API key. Approximate download size: 5.2 GB.
+
+## One-command setup for macOS (Ollama already installed)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/celineasher/NewRepo/master/verity-mac/setup-deepseek-local.sh | bash
+```
+
+The setup script checks that Ollama is installed, starts the macOS Ollama app if the server is stopped, downloads `deepseek-r1:8b`, verifies it appears in `ollama list`, and opens Verity if present. It does **not** change your Voice Studio settings or overwrite your other AI models.
+
+To inspect the script before running it:
+
+```bash
+curl -fL https://raw.githubusercontent.com/celineasher/NewRepo/master/verity-mac/setup-deepseek-local.sh -o ~/Downloads/setup-deepseek-local.sh
+less ~/Downloads/setup-deepseek-local.sh
+bash ~/Downloads/setup-deepseek-local.sh
+```
+
+Once downloaded, open Verity, select **AI Provider: Ollama (local)**, refresh models, choose `deepseek-r1:8b`, and send a chat message. For voice, unmute the microphone and use hands-free or push-to-talk.
+
+Manual install (if preferred):
+
+```bash
+ollama pull deepseek-r1:8b
+ollama run deepseek-r1:8b
+```
+
+The Ollama app or server must stay running while Verity uses the local model. If the model does not appear, check `ollama list` and reload the model list in Verity.
+
+---
+
 # Verity v1.2.6 — Hear Yourself freeze fix
 
 When enabling **Hear Yourself**, Verity now routes microphone sidetone through a **separate output-only audio engine**. CoreAudio output switching and monitor shutdown run on a dedicated audio queue, so toggling monitoring no longer rebuilds the active speech-recognition graph on the UI thread. Mic level monitoring and speech recognition continue independently. Turn live monitoring on only with headphones to avoid feedback.
