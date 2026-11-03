@@ -65,7 +65,7 @@ rsync -a "$bundle/" "$source_dir/"
 command -v python3 >/dev/null 2>&1 || fail 'Python 3 is required to update Verity (install Xcode Command Line Tools).'
 say 'Applying Verity v1.2.2 voice playback fix.'
 curl --proto '=https' --tlsv1.2 --fail --silent --show-error --location --retry 2 \
-  'https://raw.githubusercontent.com/celineasher/NewRepo/afcc42895024305b0be7535d114cf23296e8b152/verity-mac/audio-hotfix-1.2.2.py' \
+  'https://raw.githubusercontent.com/celineasher/NewRepo/c1cd00c665c93c32a3554bed71d2b677501263f8/verity-mac/audio-hotfix-1.2.2.py' \
   -o "$workspace/audio-hotfix.py" || fail 'Could not download the v1.2.2 audio fix from GitHub.'
 python3 "$workspace/audio-hotfix.py" "$source_dir" || fail 'Could not patch Swift voice sources; installation stopped safely.'
 
