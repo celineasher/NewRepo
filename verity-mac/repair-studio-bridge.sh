@@ -15,13 +15,17 @@ agent="$HOME/Library/LaunchAgents/com.local.verity.studio-bridge.plist"
 tempdir="$(getconf DARWIN_USER_TEMP_DIR 2>/dev/null || echo /tmp)"
 temp="$(mktemp "$tempdir/verity-studio-fix.XXXXXXXX")"
 trap 'rm -f "$temp"' EXIT
-url='https://raw.githubusercontent.com/celineasher/NewRepo/master/verity-mac/fix-studio-bridge-1.3.1.py'
+url='https://raw.githubusercontent.com/celineasher/NewRepo/12aa4dd18d7971254c3948c5d9d75632becf1479/verity-mac/fix-studio-bridge-1.3.1.py'
 curl --proto '=https' --tlsv1.2 --fail --location --silent --show-error --retry 2 "$url" -o "$temp" \
   || fail 'Could not download the patch from GitHub.'
 expected='777cf011be9025a9af81e00b3092866b0e06d2df98586b950633a8348b3d47ae'
 [[ ${#expected} -eq 64 ]] || fail 'Invalid pinned patch checksum.'
 actual="$(shasum -a 256 "$temp" | awk '{print $1}')"
-[[ "$actual" == "$expected" ]] || fail 'Patch hash mismatch; refusing to execute it.'
+if [[ "$actual" != "$expected" ]]; then
+  notice "Expected SHA-256: $expected"
+  notice "Received SHA-256: $actual"
+  fail 'GitHub patch download did not match the pinned checksum. No changes were applied.'
+fi
 notice 'Applying bounded Studio MCP timeouts and local diagnostics.'
 python3 "$temp" "$bridge" || fail 'Bridge patch failed; previous app was not modified.'
 python3 -m py_compile "$bridge" || fail 'Patched bridge failed Python syntax verification.'
