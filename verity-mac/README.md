@@ -1,3 +1,26 @@
+# Fix: Studio bridge connection timed out (Studio Mode v1.3.1)
+
+The first Studio Mode bridge could block indefinitely while reading a reply from the official StudioMCP subprocess. To repair **without reinstalling Verity**, run:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/celineasher/NewRepo/master/verity-mac/repair-studio-bridge.sh | bash
+```
+
+The repair keeps your installed app and AI settings; it patches only `~/Library/Application Support/Verity/StudioBridge/studio_agent.py`, compiles the Python file, restarts the LaunchAgent, and runs two checks: local bridge health and Studio MCP status. The patch is SHA-256 verified. It saves a backup beside the original.
+
+In Roblox Studio, open your place and go to **Assistant → ... → Manage MCP Servers → Enable Studio as MCP server**. If already enabled but no clients connect, toggle it **OFF then ON** and check for the green connected-client indicator. Roblox has documented an intermittent macOS connection issue when Studio windows open before Assistant. The repair cannot force-enable the built-in Studio MCP server without using Studio's UI.
+
+If the bridge still reports an error, inspect these two local logs (do not share token/API key files):
+
+```bash
+tail -n 40 ~/Library/Logs/verity-studio-error.log
+tail -n 40 ~/Library/Logs/verity-studiomcp-stderr.log
+```
+
+New Studio Mode installs through `studio.sh` automatically apply this fix after installation. This update changes only the Python bridge, not the SwiftUI Verity app.
+
+---
+
 # Roblox Studio MCP — Verity Studio Mode v1.3.0
 
 To install Studio Mode without downloading anything from ChatGPT, **quit Verity** and run the GitHub launcher:
