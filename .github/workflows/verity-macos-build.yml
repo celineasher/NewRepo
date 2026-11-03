@@ -12,11 +12,13 @@ jobs:
     runs-on: macos-15
     timeout-minutes: 20
     steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: Download and compile the current Verity installer
         shell: bash
         run: |
           set -euo pipefail
-          curl --fail --location --silent --show-error "https://raw.githubusercontent.com/celineasher/NewRepo/master/verity-mac/install.sh" -o /tmp/verity-github-install.sh
-          bash /tmp/verity-github-install.sh --no-launch
+          bash verity-mac/install-verity.sh --no-launch
           test -x "$HOME/Applications/Verity.app/Contents/MacOS/Verity"
           /usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$HOME/Applications/Verity.app/Contents/Info.plist"
