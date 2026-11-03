@@ -1,3 +1,23 @@
+# Install DeepSeek on Athar SSD
+
+The [local DeepSeek installer](./setup-deepseek-local.sh) now stores DeepSeek R1 8B on the mounted **Athar SSD** rather than assuming the Mac's internal storage. It uses an existing SSD model directory if one is already configured. By default it will create `/Volumes/Athar SSD/Ollama/models` only when needed.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/celineasher/NewRepo/master/verity-mac/setup-deepseek-local.sh | bash
+```
+
+Preview the selected drive path without changing any settings:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/celineasher/NewRepo/master/verity-mac/setup-deepseek-local.sh | bash -s -- --dry-run
+```
+
+**Safety:** The script refuses to run if the SSD is not mounted, asks Ollama to quit before moving model storage, copies old models to the SSD, retains a timestamped backup of the former `~/.ollama/models` path, and creates a symlink to the SSD. It sets `OLLAMA_MODELS` in the current macOS launch session, relaunches Ollama, then verifies that the `deepseek-r1:8b` manifest was written on the SSD. Do not unplug the drive while Ollama is running.
+
+**In Verity:** Select **AI Provider → Ollama (local)**, refresh the models, and choose `deepseek-r1:8b`. This does not install the full DeepSeek V4.1 Flash checkpoint, and Verity itself can remain installed in `~/Applications`.
+
+---
+
 # Local DeepSeek R1 8B for Verity
 
 DeepSeek-R1 8B is a **local Ollama model**, not the DeepSeek V4.1 Flash cloud API. It requires no DeepSeek API key. Approximate download size: 5.2 GB.
