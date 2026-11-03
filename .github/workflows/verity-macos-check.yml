@@ -22,15 +22,17 @@ jobs:
         env:
           CI: "1"
         run: bash verity-mac/install.sh --no-launch
-      - name: Verify v1.2.6 app bundle
+      - name: Verify v1.2.7 app bundle
         run: |
           set -euo pipefail
           APP="$HOME/Applications/Verity.app"
           test -x "$APP/Contents/MacOS/Verity"
           VERSION=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$APP/Contents/Info.plist")
-          test "$VERSION" = '1.2.6'
+          test "$VERSION" = '1.2.7'
           grep -Fq 'private var monitorSection: some View' "$HOME/Library/Application Support/Verity/Source/Sources/Verity/Views.swift"
           grep -Fq 'let onDone: () -> Void' "$HOME/Library/Application Support/Verity/Source/Sources/Verity/Views.swift"
           grep -Fq 'final class LiveMicMonitor' "$HOME/Library/Application Support/Verity/Source/Sources/Verity/LiveMicMonitor.swift"
           grep -Fq 'let monitor = micMonitor' "$HOME/Library/Application Support/Verity/Source/Sources/Verity/VoiceController.swift"
+          grep -Fq 'Mic channel (SSL / multi-input)' "$HOME/Library/Application Support/Verity/Source/Sources/Verity/Views.swift"
+          grep -Fq 'func testMonitorOutput()' "$HOME/Library/Application Support/Verity/Source/Sources/Verity/VoiceController.swift"
           file "$APP/Contents/MacOS/Verity"
