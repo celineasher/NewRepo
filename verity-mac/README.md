@@ -1,3 +1,23 @@
+# Roblox Studio MCP — Verity Studio Mode v1.3.0
+
+To install Studio Mode without downloading anything from ChatGPT, **quit Verity** and run the GitHub launcher:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/celineasher/NewRepo/master/verity-mac/studio.sh | bash
+```
+
+The small `studio.sh` launcher downloads `install-studio-mode.sh` to a temporary file and runs it. It must be saved to disk because the full installer reads its embedded source archive from itself. The installer compiles an updated Verity application from the installed editable source, then installs the Studio MCP bridge. It needs an existing Verity installation and Apple Swift tools.
+
+To review the scripts before running, open:
+- https://github.com/celineasher/NewRepo/blob/master/verity-mac/studio.sh
+- https://github.com/celineasher/NewRepo/blob/master/verity-mac/install-studio-mode.sh
+
+After installing, enable the official Roblox Studio MCP server in Studio Assistant settings, then open Verity, select your Ollama model and enable Studio Mode. Review and approve generated Studio changes before applying them.
+
+**Note:** Studio Mode is a separate prototype overlay. The regular Verity GitHub installer can overwrite it unless its changes are merged into the core installer. This publishing step does not independently verify the native macOS build or live MCP connection.
+
+---
+
 # Use local DeepSeek R1 8B in Verity
 
 Once DeepSeek R1 8B is installed with Ollama on your Athar SSD, switch Verity's saved AI provider and model using:
