@@ -1,0 +1,22 @@
+name: Verity macOS build check
+
+on:
+  push:
+    paths:
+      - 'verity-mac/**'
+      - '.github/workflows/verity-macos-build.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 20
+    steps:
+      - name: Download and compile the current Verity installer
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --silent --show-error "https://raw.githubusercontent.com/celineasher/NewRepo/master/verity-mac/install.sh" -o /tmp/verity-github-install.sh
+          bash /tmp/verity-github-install.sh --no-launch
+          test -x "$HOME/Applications/Verity.app/Contents/MacOS/Verity"
+          /usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$HOME/Applications/Verity.app/Contents/Info.plist"
