@@ -18,7 +18,8 @@ trap 'rm -f "$temp"' EXIT
 url='https://raw.githubusercontent.com/celineasher/NewRepo/master/verity-mac/fix-studio-bridge-1.3.1.py'
 curl --proto '=https' --tlsv1.2 --fail --location --silent --show-error --retry 2 "$url" -o "$temp" \
   || fail 'Could not download the patch from GitHub.'
-expected='777cf011be9025a9af81e00b3092866b950633a8348b3d47ae'
+expected='777cf011be9025a9af81e00b3092866b0e06d2df98586b950633a8348b3d47ae'
+[[ ${#expected} -eq 64 ]] || fail 'Invalid pinned patch checksum.'
 actual="$(shasum -a 256 "$temp" | awk '{print $1}')"
 [[ "$actual" == "$expected" ]] || fail 'Patch hash mismatch; refusing to execute it.'
 notice 'Applying bounded Studio MCP timeouts and local diagnostics.'
