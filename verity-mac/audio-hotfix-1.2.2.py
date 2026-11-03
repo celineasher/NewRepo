@@ -47,8 +47,8 @@ change('VerityStore.swift',
         lastError = nil
         isSpeaking = true
         status = "Voice preview…"''')
-change('Version.swift', '"1.2.1"', '"1.2.2"')
+change('Version.swift', '"1.2.0"', '"1.2.2"')
 build = root / 'build.command'
-contents=build.read_text().replace('<string>1.2.1</string>', '<string>1.2.2</string>')
+contents=build.read_text().replace('<string>1.2.0</string>', '<string>1.2.2</string>')
 build.write_text(contents)
 print('[Verity] v1.2.2: Fish Audio Free model, visible diagnostics, and macOS voice fallback enabled.')
