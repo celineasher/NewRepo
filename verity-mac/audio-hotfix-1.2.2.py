@@ -16,7 +16,7 @@ change('VoiceServices.swift', 'req.setValue("s2.1-pro", forHTTPHeaderField: "mod
 change('VoiceServices.swift',
 '''            throw NSError(domain: "Verity.Fish", code: status, userInfo: [NSLocalizedDescriptionKey: "Fish Audio request failed (HTTP \(status)). Check your API key, voice ID, and account usage."])''',
 '''            let rawMessage = String(data: data, encoding: .utf8) ?? ""
-            let serverMessage = String(rawMessage.prefix(180)).replacingOccurrences(of: "\n", with: " ")
+            let serverMessage = String(rawMessage.prefix(180)).replacingOccurrences(of: "\\n", with: " ")
             let details = serverMessage.isEmpty ? "" : " Response: \(serverMessage)"
             throw NSError(domain: "Verity.Fish", code: status, userInfo: [NSLocalizedDescriptionKey: "Fish Audio HTTP \(status). Check free-model access, API key and voice ID.\(details)"])''')
 change('VoiceController.swift',
