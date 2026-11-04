@@ -47,3 +47,12 @@ printf '[Verity Studio] Installing stronger Luau property validation v1.3.3…\n
 curl --proto '=https' --tlsv1.2 --fail --location --silent --show-error --retry 2 "$quality_url" -o "$quality"
 bash -n "$quality"
 bash "$quality"
+
+# v1.3.4: ensure local thinking models return usable code for Studio previews.
+ollama_fix_url='https://raw.githubusercontent.com/celineasher/NewRepo/master/verity-mac/repair-ollama-luau.sh'
+ollama_fix="$(mktemp -t verity-studio-ollama-fix)"
+trap 'rm -f "$installer" "$repair" "$guard" "$quality" "$ollama_fix"' EXIT
+printf '[Verity Studio] Installing local DeepSeek/Ollama Luau generation repair…\n'
+curl --proto '=https' --tlsv1.2 --fail --location --silent --show-error --retry 2 "$ollama_fix_url" -o "$ollama_fix"
+bash -n "$ollama_fix"
+bash "$ollama_fix"
