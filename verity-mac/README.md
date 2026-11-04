@@ -1,3 +1,21 @@
+# Verity Studio Mode v1.3.4 — DeepSeek R1 returns no Luau source
+
+If Studio Mode says **"The model returned no Luau source"**, the bridge's local Ollama code-generation call may have spent the output budget on thinking instead of a final response. The v1.3.4 repair explicitly sets `think: false`, accepts valid JSON with optional fences/preface, and retries one incomplete response. All Studio modifications continue to require preview and **Apply in Studio** approval.
+
+Repair the existing Verity Studio bridge without rebuilding the Swift app:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/celineasher/NewRepo/master/verity-mac/repair-ollama-luau.sh | bash
+```
+
+Generate a **new** preview in Verity. The repair validates the downloaded Python patch against a pinned SHA-256 and restarts the local bridge.
+
+If DeepSeek R1 8B still cannot generate code for a request, simplify the task to one small edit or use an Ollama coder model such as `qwen2.5-coder:7b`. Do not rerun the ordinary Verity core updater to fix a Studio bridge-only issue.
+
+Source files: `repair-ollama-luau.sh` and `repair-ollama-luau-v134.py`. The `studio.sh` launcher includes this repair for subsequent Studio Mode installs.
+
+---
+
 # Fix: Studio bridge connection timed out (Studio Mode v1.3.1)
 
 The first Studio Mode bridge could block indefinitely while reading a reply from the official StudioMCP subprocess. To repair **without reinstalling Verity**, run:
