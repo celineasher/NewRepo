@@ -36,7 +36,7 @@ rsync -a --exclude='.build' --exclude='dist' "$source_dir/" "$work/build/" \
   || fail "Could not prepare a source copy."
 
 # Exact repository commit with version-pinned sources.
-root='https://raw.githubusercontent.com/celineasher/NewRepo/2c61f6a2937e586bf52eee0d0958de3833200e7f/verity-mac/mascot-v1.4'
+root='https://raw.githubusercontent.com/celineasher/NewRepo/747654d40de306de73b36ef9ecde8f8fc6d54409/verity-mac/mascot-v1.4'
 fetch(){
   local filename="$1" sha="$2" out="$work/$1" actual
   curl --proto '=https' --tlsv1.2 -fsSL --retry 3 "$root/$filename" -o "$out" \
@@ -49,7 +49,7 @@ fetch(){
   fi
 }
 info "Downloading verified yellow-smiley artwork and motion code…"
-fetch 'VerityMascotStage.swift' '7b92d5ed46a9ffd218434f4638f741e850f408429a559137b5d2851db76ed3b4'
+fetch 'VerityMascotStage.swift' 'e72f78423deb30daf75b6f71d768cae9076f54a08e786b7b44d7a86c997cb264'
 fetch 'generate-sprites.py' '2cf75b4b54d728dbc15819eb6b87512a82586cf91f3c07aebac9d99bbeb4de5a'
 fetch 'patch-mascot.py' '21e3c0b70e3b40331446f60c487a81d75c19a7382960ab197e8d3edff11061e1'
 
