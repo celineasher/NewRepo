@@ -25,6 +25,7 @@ private struct MascotPose {
     var shadowScale: CGFloat = 1
     var light: Double = 0.12
 
+    @MainActor
     static func calculate(time: Double, store: VerityStore) -> MascotPose {
         var p = MascotPose()
         if !store.animationsEnabled {
