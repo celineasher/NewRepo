@@ -9,7 +9,11 @@ try { state.history = JSON.parse(localStorage.getItem('nebula_history') || '[]')
 const KEY = 'nebula_access_token';
 try { state.token = sessionStorage.getItem(KEY) || localStorage.getItem(KEY) || ''; } catch {}
 try { els.remember.checked = Boolean(localStorage.getItem(KEY)); } catch {}
-els.token.value = state.token;
+state.token = '';
+els.token.value = '';
+els.token.disabled = true;
+$('saveSettings').disabled = true;
+for (const input of [els.ipa, els.cert, els.profiles, els.password]) input.disabled = true;
 
 function toast(message) {
   const el = $('toast');
@@ -32,6 +36,7 @@ function updateVault(name, badge, value, loaded) {
   $(badge).classList.toggle('present', loaded);
 }
 function updateFileState() {
+  els.sign.disabled = true;
   textFile(els.ipa, 'ipaFileTitle', 'ipaFileDescription', 'Choose an IPA file', 'Browse Files on your iPhone');
   textFile(els.cert, 'certTitle', 'certDesc', 'Certificate', 'Import .p12');
   const profiles = Array.from(els.profiles.files || []);
@@ -41,8 +46,8 @@ function updateFileState() {
   updateVault('vaultIpa', 'vaultIpaBadge', ipa?.name || 'No IPA selected', Boolean(ipa));
   updateVault('vaultCert', 'vaultCertBadge', cert?.name || 'No .p12 selected', Boolean(cert));
   updateVault('vaultProfile', 'vaultProfileBadge', profiles.length ? profiles.map(p => p.name).join(', ') : 'No profile selected', Boolean(profiles.length));
-  els.sign.disabled = state.busy || !ipa || !cert || profiles.length === 0;
-  if (!state.busy) $('signButtonText').textContent = 'SIGN APPLICATION';
+  els.sign.disabled = true;
+  if (!state.busy) $('signButtonText').textContent = 'SIGNING OFFLINE';
   els.result.hidden = true;
 }
 [els.ipa, els.cert, els.profiles].forEach(input => input.addEventListener('change', updateFileState));
@@ -78,6 +83,10 @@ $('saveSettings').addEventListener('click', async () => {
   await checkHealth();
 });
 async function checkHealth() {
+  $('statusDot').className = 'online-pulse offline';
+  $('connectionStatus').textContent = 'PREVIEW MODE';
+  $('engineMessage').textContent = 'Free GitHub Pages UI preview: signing is disabled until a secure server is available. Do not enter certificates or passwords.';
+  return;
   try {
     const response = await fetch('/api/health', { cache: 'no-store' });
     if (!response.ok) throw new Error('offline');
@@ -212,5 +221,5 @@ $('downloadButton').addEventListener('click', async () => {
 });
 updateFileState(); renderActivity(); checkHealth();
 if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
 }

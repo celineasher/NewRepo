@@ -8,13 +8,17 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="NEBULA">
   <meta name="description" content="NEBULA – a private, iPhone-first IPA signing studio.">
-  <link rel="manifest" href="/manifest.webmanifest">
-  <link rel="apple-touch-icon" href="/icons/icon.svg">
-  <link rel="icon" href="/icons/icon.svg">
-  <link rel="stylesheet" href="/app.css">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" href="./icons/icon.svg">
+  <link rel="icon" href="./icons/icon.svg">
+  <link rel="stylesheet" href="./app.css">
   <title>NEBULA • IPA Signer</title>
 </head>
 <body>
+<div role="status" style="position:relative;z-index:9000;padding:13px 15px;text-align:center;color:#e7ddff;background:linear-gradient(100deg,#282047,#101b33);border-bottom:1px solid #8c6de455;font:500 13px/1.4 -apple-system,BlinkMacSystemFont,sans-serif">
+<strong style="letter-spacing:.09em">NEBULA PREVIEW · SIGNING OFFLINE</strong>
+<div style="margin-top:5px;color:#c9c5d8">Free Home Screen preview. A secure signing server is still required. Do not enter certificates or passwords here.</div>
+</div>
   <svg class="icons" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <symbol id="ic-spark" viewBox="0 0 24 24"><path d="m12 2 1.9 6.1L20 10l-6.1 1.9L12 18l-1.9-6.1L4 10l6.1-1.9L12 2ZM19 17l.8 2.2L22 20l-2.2.8L19 23l-.8-2.2L16 20l2.2-.8L19 17Z"/></symbol>
     <symbol id="ic-upload" viewBox="0 0 24 24"><path d="M12 16V3m0 0L7 8m5-5 5 5M4 15v3a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-3"/></symbol>
@@ -58,7 +62,7 @@
         <div class="module upload-module">
           <div class="module-top"><div class="module-icon purple"><svg><use href="#ic-file"/></svg></div><div class="module-title"><h3>Application package</h3><p>Select the app you want to sign</p></div><div class="module-number">01</div></div>
           <label class="file-drop" id="ipaDrop">
-            <input type="file" id="ipaInput" accept=".ipa,application/octet-stream" aria-label="Select IPA file">
+            <input type="file" id="ipaInput" accept=".ipa,application/octet-stream" aria-label="Select IPA file" disabled >
             <div class="drop-symbol"><svg><use href="#ic-upload"/></svg></div>
             <div><strong id="ipaFileTitle">Choose an IPA file</strong><span id="ipaFileDescription">Browse Files on your iPhone</span></div>
             <span class="drop-plus">+</span>
@@ -68,12 +72,12 @@
         <div class="module identity-module">
           <div class="module-top"><div class="module-icon cyan"><svg><use href="#ic-key"/></svg></div><div class="module-title"><h3>Signing identity</h3><p>Use your own Apple certificate</p></div><div class="module-number">02</div></div>
           <div class="identity-grid">
-            <label class="mini-upload"><input id="certInput" type="file" accept=".p12"><span class="mini-symbol"><svg><use href="#ic-lock"/></svg></span><span class="mini-text"><strong id="certTitle">Certificate</strong><small id="certDesc">Import .p12</small></span><svg class="mini-arrow"><use href="#ic-right"/></svg></label>
-            <label class="mini-upload"><input id="profileInput" type="file" accept=".mobileprovision" multiple><span class="mini-symbol"><svg><use href="#ic-shield"/></svg></span><span class="mini-text"><strong id="profileTitle">Provisioning</strong><small id="profileDesc">Import profile(s)</small></span><svg class="mini-arrow"><use href="#ic-right"/></svg></label>
+            <label class="mini-upload"><input id="certInput" type="file" accept=".p12" disabled ><span class="mini-symbol"><svg><use href="#ic-lock"/></svg></span><span class="mini-text"><strong id="certTitle">Certificate</strong><small id="certDesc">Import .p12</small></span><svg class="mini-arrow"><use href="#ic-right"/></svg></label>
+            <label class="mini-upload"><input id="profileInput" type="file" accept=".mobileprovision" multiple disabled ><span class="mini-symbol"><svg><use href="#ic-shield"/></svg></span><span class="mini-text"><strong id="profileTitle">Provisioning</strong><small id="profileDesc">Import profile(s)</small></span><svg class="mini-arrow"><use href="#ic-right"/></svg></label>
           </div>
           <div class="form-stack">
             <label class="field-label" for="passwordInput">CERTIFICATE PASSWORD</label>
-            <div class="input-wrapper"><input id="passwordInput" type="password" placeholder="Enter .p12 password" autocomplete="off"><button type="button" id="revealPassword" class="inline-action" aria-label="Show or hide password">SHOW</button></div>
+            <div class="input-wrapper"><input id="passwordInput" type="password" placeholder="Enter .p12 password" autocomplete="off" disabled ><button type="button" id="revealPassword" class="inline-action" aria-label="Show or hide password">SHOW</button></div>
           </div>
           <details class="advanced"><summary>Advanced options <span>OPTIONAL</span></summary><div class="advanced-fields"><label class="field-label" for="bundleInput">NEW BUNDLE IDENTIFIER</label><input id="bundleInput" type="text" placeholder="com.example.myapp" autocomplete="off" autocapitalize="off"><p>Leave blank to preserve the IPA's original bundle ID. The profile must match.</p><label class="field-label" for="displayNameInput">APP DISPLAY NAME</label><input id="displayNameInput" type="text" maxlength="80" placeholder="Keep original name"></div></details>
         </div>
@@ -111,9 +115,9 @@
       <section class="view" id="view-settings">
         <div class="subpage-head"><span class="eyebrow">PREFERENCES / 04</span><h1>System <em>settings.</em></h1><p>Connect your private signing engine and control how this device handles access.</p></div>
         <div class="module settings-module"><div class="module-top"><div class="module-icon purple"><svg><use href="#ic-lock"/></svg></div><div class="module-title"><h3>Engine access</h3><p>Secure connection to your server</p></div></div>
-          <label class="field-label" for="accessTokenInput">PRIVATE ACCESS KEY</label><div class="input-wrapper"><input type="password" id="accessTokenInput" placeholder="Paste your server access token" autocomplete="off"><button id="revealAccessToken" class="inline-action">SHOW</button></div>
+          <label class="field-label" for="accessTokenInput">PRIVATE ACCESS KEY</label><div class="input-wrapper"><input type="password" id="accessTokenInput" placeholder="Paste your server access token" autocomplete="off" disabled ><button id="revealAccessToken" class="inline-action">SHOW</button></div>
           <label class="toggle-line"><span><strong>Remember on this device</strong><small>Otherwise keep key for this browser session</small></span><input type="checkbox" id="rememberToken"><span class="switch"></span></label>
-          <button class="save-button" id="saveSettings">Save access key <svg><use href="#ic-check"/></svg></button><p class="settings-hint" id="engineMessage">Set a token on your server before signing.</p>
+          <button class="save-button" id="saveSettings" disabled>Save access key <svg><use href="#ic-check"/></svg></button><p class="settings-hint" id="engineMessage">Set a token on your server before signing.</p>
         </div>
         <div class="module settings-module"><div class="module-top"><div class="module-icon cyan"><svg><use href="#ic-help"/></svg></div><div class="module-title"><h3>Install on iPhone</h3><p>Use NEBULA as a Home Screen app</p></div></div><div class="install-steps"><p><b>01</b> Deploy this project to an HTTPS host.</p><p><b>02</b> Open the hosted link in Safari.</p><p><b>03</b> Tap Share → <strong>Add to Home Screen.</strong></p></div><p class="settings-hint">The signing engine runs on your private server, not locally inside Safari.</p></div>
         <div class="footer-version">NEBULA / BUILD 1.0.0 <span>✦</span> DESIGNED FOR iOS</div>
@@ -128,6 +132,6 @@
     </nav>
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
   </div>
-  <script src="/app.js" defer></script>
+  <script src="./app.js" defer></script>
 </body>
 </html>
