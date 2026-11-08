@@ -1,0 +1,20 @@
+{
+  "name": "NEBULA \u2014 IPA Signer",
+  "short_name": "NEBULA",
+  "description": "Private, iPhone-first IPA signing client",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#070914",
+  "theme_color": "#080a17",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

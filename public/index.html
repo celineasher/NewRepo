@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#080a17">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="NEBULA">
+  <meta name="description" content="NEBULA – a private, iPhone-first IPA signing studio.">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/icons/icon.svg">
+  <link rel="icon" href="/icons/icon.svg">
+  <link rel="stylesheet" href="/app.css">
+  <title>NEBULA • IPA Signer</title>
+</head>
+<body>
+  <svg class="icons" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="ic-spark" viewBox="0 0 24 24"><path d="m12 2 1.9 6.1L20 10l-6.1 1.9L12 18l-1.9-6.1L4 10l6.1-1.9L12 2ZM19 17l.8 2.2L22 20l-2.2.8L19 23l-.8-2.2L16 20l2.2-.8L19 17Z"/></symbol>
+    <symbol id="ic-upload" viewBox="0 0 24 24"><path d="M12 16V3m0 0L7 8m5-5 5 5M4 15v3a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-3"/></symbol>
+    <symbol id="ic-file" viewBox="0 0 24 24"><path d="M13 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10l-7-7Z"/><path d="M13 3v7h7M8 15h8M8 18h5"/></symbol>
+    <symbol id="ic-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="m11 12 9-9m-5 0h5v5m-8 4-2 2"/></symbol>
+    <symbol id="ic-shield" viewBox="0 0 24 24"><path d="M12 2 4 5v6c0 5.2 3.4 9 8 11 4.6-2 8-5.8 8-11V5l-8-3Z"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="ic-right" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+    <symbol id="ic-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="ic-orbit" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><ellipse cx="12" cy="12" rx="10" ry="5" transform="rotate(-35 12 12)"/></symbol>
+    <symbol id="ic-activity" viewBox="0 0 24 24"><path d="M3 12h4l3-7 4 14 3-7h4"/></symbol>
+    <symbol id="ic-sliders" viewBox="0 0 24 24"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="2"/><circle cx="15" cy="17" r="2"/></symbol>
+    <symbol id="ic-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 1 1 8 0v3"/></symbol>
+    <symbol id="ic-download" viewBox="0 0 24 24"><path d="M12 3v12m0 0 5-5m-5 5-5-5M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></symbol>
+    <symbol id="ic-x" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19"/></symbol>
+    <symbol id="ic-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.6 2.6 0 1 1 4.2 2c-1.1.8-1.7 1.3-1.7 2.7M12 17h.01"/></symbol>
+  </svg>
+  <div class="ambient ambient-left"></div><div class="ambient ambient-right"></div>
+  <div id="app" class="phone-app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-icon"><span>N</span></div>
+        <div class="brand-copy"><strong>NEBULA<span class="brand-star">✦</span></strong><span>IPA SIGNING STUDIO</span></div>
+      </div>
+      <button class="round-button" id="connectButton" aria-label="Open connection settings"><svg><use href="#ic-sliders"/></svg></button>
+    </header>
+    <div class="top-status"><span class="online-pulse" id="statusDot"></span><span id="connectionStatus">CHECKING ENGINE</span><span class="top-status-sep">/</span><span>PRIVATE WORKSPACE</span><span class="status-code">01—26</span></div>
+
+    <main>
+      <section class="view active" id="view-sign">
+        <div class="hero">
+          <div class="hero-stars"></div>
+          <div class="hero-kicker"><span class="tiny-diamond"></span> NEW GENERATION SIGNING</div>
+          <div class="hero-orbit"><div class="orbit-halo"></div><div class="orbit-core"><span class="core-glyph">✦</span></div><div class="orbit-ring orbit-ring-a"></div><div class="orbit-ring orbit-ring-b"></div><div class="orbit-dot"></div></div>
+          <h1>Your apps.<br><em>Your signature.</em></h1>
+          <p>Seamless IPA signing.<br>Built for your iPhone.</p>
+          <div class="hero-foot"><span class="hero-pill"><svg><use href="#ic-shield"/></svg> ENCRYPTED TRANSFER</span><span class="hero-number">N° 001 <span>↗</span></span></div>
+        </div>
+
+        <div class="section-heading"><div><span class="eyebrow">WORKSPACE / 01</span><h2>New signature</h2></div><span class="step-counter">01 <span>/ 03</span></span></div>
+
+        <div class="module upload-module">
+          <div class="module-top"><div class="module-icon purple"><svg><use href="#ic-file"/></svg></div><div class="module-title"><h3>Application package</h3><p>Select the app you want to sign</p></div><div class="module-number">01</div></div>
+          <label class="file-drop" id="ipaDrop">
+            <input type="file" id="ipaInput" accept=".ipa,application/octet-stream" aria-label="Select IPA file">
+            <div class="drop-symbol"><svg><use href="#ic-upload"/></svg></div>
+            <div><strong id="ipaFileTitle">Choose an IPA file</strong><span id="ipaFileDescription">Browse Files on your iPhone</span></div>
+            <span class="drop-plus">+</span>
+          </label>
+        </div>
+
+        <div class="module identity-module">
+          <div class="module-top"><div class="module-icon cyan"><svg><use href="#ic-key"/></svg></div><div class="module-title"><h3>Signing identity</h3><p>Use your own Apple certificate</p></div><div class="module-number">02</div></div>
+          <div class="identity-grid">
+            <label class="mini-upload"><input id="certInput" type="file" accept=".p12"><span class="mini-symbol"><svg><use href="#ic-lock"/></svg></span><span class="mini-text"><strong id="certTitle">Certificate</strong><small id="certDesc">Import .p12</small></span><svg class="mini-arrow"><use href="#ic-right"/></svg></label>
+            <label class="mini-upload"><input id="profileInput" type="file" accept=".mobileprovision" multiple><span class="mini-symbol"><svg><use href="#ic-shield"/></svg></span><span class="mini-text"><strong id="profileTitle">Provisioning</strong><small id="profileDesc">Import profile(s)</small></span><svg class="mini-arrow"><use href="#ic-right"/></svg></label>
+          </div>
+          <div class="form-stack">
+            <label class="field-label" for="passwordInput">CERTIFICATE PASSWORD</label>
+            <div class="input-wrapper"><input id="passwordInput" type="password" placeholder="Enter .p12 password" autocomplete="off"><button type="button" id="revealPassword" class="inline-action" aria-label="Show or hide password">SHOW</button></div>
+          </div>
+          <details class="advanced"><summary>Advanced options <span>OPTIONAL</span></summary><div class="advanced-fields"><label class="field-label" for="bundleInput">NEW BUNDLE IDENTIFIER</label><input id="bundleInput" type="text" placeholder="com.example.myapp" autocomplete="off" autocapitalize="off"><p>Leave blank to preserve the IPA's original bundle ID. The profile must match.</p><label class="field-label" for="displayNameInput">APP DISPLAY NAME</label><input id="displayNameInput" type="text" maxlength="80" placeholder="Keep original name"></div></details>
+        </div>
+
+        <div class="module action-module">
+          <div class="module-top"><div class="module-icon mint"><svg><use href="#ic-spark"/></svg></div><div class="module-title"><h3>Generate signature</h3><p>Resign and export your application</p></div><div class="module-number">03</div></div>
+          <div class="progress-panel" id="progressPanel" hidden>
+            <div class="progress-heading"><span id="progressTitle">Preparing package</span><span id="progressPercent">0%</span></div>
+            <div class="progress-track"><div id="progressFill"></div></div>
+            <p id="progressText">Waiting for file upload…</p>
+          </div>
+          <button class="sign-button" id="signButton" disabled><span class="sign-button-icon"><svg><use href="#ic-spark"/></svg></span><span id="signButtonText">SIGN APPLICATION</span><span class="sign-arrow">↗</span></button>
+          <div class="result-panel" id="resultPanel" hidden><div class="result-check"><svg><use href="#ic-check"/></svg></div><div><strong>Signature complete</strong><p id="resultFileName">Signed IPA is ready.</p></div><button id="downloadButton" class="download-button"><svg><use href="#ic-download"/></svg> Download</button></div>
+          <div class="under-button"><svg><use href="#ic-lock"/></svg> Credentials removed from the signing server after processing</div>
+        </div>
+        <div class="endnote"><span class="note-dot"></span> POWERED BY ZSIGN <span class="endnote-line"></span> PRIVATE BY DESIGN</div>
+      </section>
+
+      <section class="view" id="view-vault">
+        <div class="subpage-head"><span class="eyebrow">SIGNING ASSETS / 02</span><h1>Identity <em>vault.</em></h1><p>Your selected signing assets are kept in this page only until the upload. No certificate library is stored on the server.</p></div>
+        <div class="vault-illustration"><span>✦</span><div class="vault-lines"></div></div>
+        <div class="section-heading"><div><span class="eyebrow">CURRENT SESSION</span><h2>Imported assets</h2></div></div>
+        <div class="vault-entry"><div class="module-icon purple"><svg><use href="#ic-file"/></svg></div><div><strong>Application</strong><p id="vaultIpa">No IPA selected</p></div><span id="vaultIpaBadge" class="small-badge">EMPTY</span></div>
+        <div class="vault-entry"><div class="module-icon cyan"><svg><use href="#ic-key"/></svg></div><div><strong>Certificate</strong><p id="vaultCert">No .p12 selected</p></div><span id="vaultCertBadge" class="small-badge">EMPTY</span></div>
+        <div class="vault-entry"><div class="module-icon mint"><svg><use href="#ic-shield"/></svg></div><div><strong>Provisioning</strong><p id="vaultProfile">No profile selected</p></div><span id="vaultProfileBadge" class="small-badge">EMPTY</span></div>
+        <button class="outlined-button" data-goto="sign">Return to signature studio <svg><use href="#ic-right"/></svg></button>
+      </section>
+
+      <section class="view" id="view-activity">
+        <div class="subpage-head"><span class="eyebrow">HISTORY / 03</span><h1>Recent <em>activity.</em></h1><p>Local history only. Signed IPA downloads remain available temporarily on the server.</p></div>
+        <div id="activityList" class="activity-list"></div>
+        <button class="outlined-button" id="clearHistory">Clear local history <svg><use href="#ic-x"/></svg></button>
+      </section>
+
+      <section class="view" id="view-settings">
+        <div class="subpage-head"><span class="eyebrow">PREFERENCES / 04</span><h1>System <em>settings.</em></h1><p>Connect your private signing engine and control how this device handles access.</p></div>
+        <div class="module settings-module"><div class="module-top"><div class="module-icon purple"><svg><use href="#ic-lock"/></svg></div><div class="module-title"><h3>Engine access</h3><p>Secure connection to your server</p></div></div>
+          <label class="field-label" for="accessTokenInput">PRIVATE ACCESS KEY</label><div class="input-wrapper"><input type="password" id="accessTokenInput" placeholder="Paste your server access token" autocomplete="off"><button id="revealAccessToken" class="inline-action">SHOW</button></div>
+          <label class="toggle-line"><span><strong>Remember on this device</strong><small>Otherwise keep key for this browser session</small></span><input type="checkbox" id="rememberToken"><span class="switch"></span></label>
+          <button class="save-button" id="saveSettings">Save access key <svg><use href="#ic-check"/></svg></button><p class="settings-hint" id="engineMessage">Set a token on your server before signing.</p>
+        </div>
+        <div class="module settings-module"><div class="module-top"><div class="module-icon cyan"><svg><use href="#ic-help"/></svg></div><div class="module-title"><h3>Install on iPhone</h3><p>Use NEBULA as a Home Screen app</p></div></div><div class="install-steps"><p><b>01</b> Deploy this project to an HTTPS host.</p><p><b>02</b> Open the hosted link in Safari.</p><p><b>03</b> Tap Share → <strong>Add to Home Screen.</strong></p></div><p class="settings-hint">The signing engine runs on your private server, not locally inside Safari.</p></div>
+        <div class="footer-version">NEBULA / BUILD 1.0.0 <span>✦</span> DESIGNED FOR iOS</div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="App navigation">
+      <button class="tab active" data-view="sign"><svg><use href="#ic-orbit"/></svg><span>Sign</span></button>
+      <button class="tab" data-view="vault"><svg><use href="#ic-shield"/></svg><span>Vault</span></button>
+      <button class="tab" data-view="activity"><svg><use href="#ic-activity"/></svg><span>Activity</span></button>
+      <button class="tab" data-view="settings"><svg><use href="#ic-sliders"/></svg><span>Settings</span></button>
+    </nav>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </div>
+  <script src="/app.js" defer></script>
+</body>
+</html>
